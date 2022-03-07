@@ -4,7 +4,7 @@ import React from 'react';
 import { GetServerSideProps } from 'next';
 import { useSession, getSession } from 'next-auth/react';
 import Layout from '../components/Layout';
-import Post, { PostProps } from '../components/Post';
+import Contract, { ContractProps } from '../components/Contract';
 import prisma from '../lib/prisma';
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
@@ -14,10 +14,10 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
     return { props: { drafts: [] } };
   }
 
-  const drafts = await prisma.post.findMany({
+  const drafts = await prisma.contract.findMany({
     where: {
       author: { email: session.user.email },
-      published: false,
+      isPublished: false,
     },
     include: {
       author: {
@@ -31,7 +31,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
 };
 
 type Props = {
-  drafts: PostProps[];
+  drafts: ContractProps[];
 };
 
 const Drafts: React.FC<Props> = (props) => {
@@ -51,24 +51,24 @@ const Drafts: React.FC<Props> = (props) => {
       <div className="page">
         <h1>My Drafts</h1>
         <main>
-          {props.drafts.map((post) => (
-            <div key={post.id} className="post">
-              <Post post={post} />
+          {props.drafts.map((contract) => (
+            <div key={contract.id} className="contract">
+              <Contract contract={contract} />
             </div>
           ))}
         </main>
       </div>
       <style jsx>{`
-        .post {
+        .contract {
           background: var(--geist-background);
           transition: box-shadow 0.1s ease-in;
         }
 
-        .post:hover {
+        .contract:hover {
           box-shadow: 1px 1px 3px #aaa;
         }
 
-        .post + .post {
+        .contract + .contract {
           margin-top: 2rem;
         }
       `}</style>

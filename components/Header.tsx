@@ -153,7 +153,7 @@ const Header: React.FC = () => {
         </p>
         <Link href="/create">
           <button>
-            <a>New post</a>
+            <a>New Contract</a>
           </button>
         </Link>
         <button onClick={() => signOut()}>

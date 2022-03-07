@@ -7,13 +7,35 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Post {
+model Contract {
   id        Int     @id @default(autoincrement())
   title     String
   content   String?
-  published Boolean @default(false)
-  author    User?   @relation(fields: [authorId], references: [id])
+  summary   String?
+  renderedContent String?
+  isPublished Boolean @default(false)
+  isPublic Boolean @default(false)
+  isTemplate Boolean @default(false)
+  author    User?   @relation(name: "author", fields: [authorId], references: [id])
   authorId  Int?
+  firstPartyName String?
+  firstPartyEmail String? 
+  firstParty    User?   @relation(name: "firstParty", fields: [firstPartyId], references: [id])
+  firstPartyId   Int?
+  firstPartySignDate  DateTime?
+  secondPartyName String? 
+  secondPartyEmail String? 
+  secondParty    User?   @relation(name: "secondParty", fields: [secondPartyId], references: [id])
+  secondPartyId   Int?
+  secondPartySignDate DateTime?
+  template Contract? @relation(name: "children", fields: [templateId], references: [id])
+  templateId Int? 
+  children    Contract[] @relation("children")
+
+
+  // SecondParty    User?   @relation(name: "secondParty", fields: [secondPartyId], references: [id])
+  // secondPartyId  Int?
+  
 }
 
 model Account {
@@ -56,7 +78,9 @@ model User {
   image         String?
   createdAt     DateTime  @default(now()) @map(name: "created_at")
   updatedAt     DateTime  @updatedAt @map(name: "updated_at")
-  posts         Post[]
+  authors         Contract[]    @relation(name: "author")
+  firstParties  Contract[]    @relation(name: "firstParty")
+  secondParties  Contract[]    @relation(name: "secondParty")
   accounts      Account[]
   sessions      Session[]
 

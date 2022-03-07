@@ -1,23 +1,9 @@
 import React, { ReactNode } from "react";
 import Header from "./Header";
-import 'bootstrap/dist/css/bootstrap.min.css';
-import Container from 'react-bootstrap/Container';
-import Button from 'react-bootstrap/Button';
-
-
-// import ButtonsShowcase from './showcases/Buttons';
-// import ToastsShowcase from './showcases/Toasts';
-
 
 type Props = {
   children: ReactNode;
 };
-
-<link
-  rel="stylesheet"
-  href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
-  integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3"
-/>
 
 const Layout: React.FC<Props> = (props) => (
   <div>
@@ -52,6 +38,8 @@ const Layout: React.FC<Props> = (props) => (
       button {
         cursor: pointer;
       }
+    `}</style>
+    <style jsx>{`
       .layout {
         padding: 0 2rem;
       }

@@ -1,12 +1,13 @@
 import React from "react"
 import { GetStaticProps } from "next"
 import Layout from "../components/Layout"
-import Post, { PostProps } from "../components/Post"
+import Contract, { ContractProps } from "../components/Contract"
 import prisma from '../lib/prisma';
+// import './src/styles.css';
 
 export const getServerSideProps: GetStaticProps = async () => {
-  const feed = await prisma.post.findMany({
-    where: { published: true },
+  const feed = await prisma.contract.findMany({
+    where: { isPublished: true },
     include: {
       author: {
         select: { name: true },
@@ -17,33 +18,33 @@ export const getServerSideProps: GetStaticProps = async () => {
 };
 
 type Props = {
-  feed: PostProps[]
+  feed: ContractProps[]
 }
 
-const Blog: React.FC<Props> = (props) => {
+const ContractList: React.FC<Props> = (props) => {
   return (
     <Layout>
       <div className="page">
-        <h1>Public Feed</h1>
+        <h1>My Contracts</h1>
         <main>
-          {props.feed.map((post) => (
-            <div key={post.id} className="post">
-              <Post post={post} />
+          {props.feed.map((contract) => (
+            <div key={contract.id} className="contract">
+              <Contract contract={contract} />
             </div>
           ))}
         </main>
       </div>
       <style jsx>{`
-        .post {
+        .contract {
           background: white;
           transition: box-shadow 0.1s ease-in;
         }
 
-        .post:hover {
+        .contract:hover {
           box-shadow: 1px 1px 3px #aaa;
         }
 
-        .post + .post {
+        .contract + .contract {
           margin-top: 2rem;
         }
       `}</style>
@@ -51,4 +52,4 @@ const Blog: React.FC<Props> = (props) => {
   )
 }
 
-export default Blog
+export default ContractList

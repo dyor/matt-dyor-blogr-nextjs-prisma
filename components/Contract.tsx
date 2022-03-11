@@ -9,6 +9,7 @@ export type ContractProps = {
   id: number;
   isTemplate: boolean;
   title: string;
+  content: string; 
   author: {
     name: string;
     email: string;

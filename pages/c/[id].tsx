@@ -39,6 +39,13 @@ async function deleteContract(id: number): Promise<void> {
   });
   Router.push('/');
 }
+async function editContract(id: number): Promise<void> {
+  Router.push(`/editcontract/${id}`); 
+}
+
+async function signContract(id: number): Promise<void> {
+  Router.push(`/sign/${id}`); 
+}
 
 //xxx NEED TO HAVE THS CREATE A CONTRACT WITH SAME VALUES AS PARENT - EXCEPT
 //empty dates should be defaulted to today
@@ -98,12 +105,22 @@ const Contract: React.FC<ContractProps> = (props) => {
         }
         {
           userHasValidSession && contractBelongsToUser && (
+          <button onClick={() => editContract(props.id)}>Edit</button>
+          )
+        }
+        {
+          userHasValidSession && contractBelongsToUser && (
             <button onClick={() => deleteContract(props.id)}>Delete</button>
           )
         }
         {
           props.isTemplate &&  (
             <button onClick={() => createChildContract(props)}>Create Child Contract</button> 
+          )
+        }
+        {
+          !props.isTemplate &&  (
+            <button onClick={() => signContract(props.id)}>Sign Contract</button> 
           )
         }
       </div>

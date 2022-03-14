@@ -4,8 +4,6 @@ import { getSession } from 'next-auth/react';
 import prisma from '../../../lib/prisma';
 
 // CONTRACT /api/contract
-// Required fields in body: title
-// Optional fields in body: content
 export default async function handle(req, res) {
   const { title, content, summary, firstPartyName, firstPartyEmail, secondPartyName, secondPartyEmail, firstPartySignDate, secondPartySignDate, isPublic, renderedContent, isTemplate, template } = req.body;
   const session = await getSession({ req });
@@ -30,4 +28,5 @@ export default async function handle(req, res) {
   });
 
   res.json(result);
+  console.log(result); 
 }

@@ -55,6 +55,10 @@ const Layout: React.FC<Props> = (props) => (
       .layout {
         padding: 0 2rem;
       }
+      textarea, input {
+        display: block;
+        width: auto;
+      }
     `}</style>
   </div>
 );

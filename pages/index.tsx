@@ -6,28 +6,28 @@ import prisma from '../lib/prisma';
 // import './src/styles.css';
 
 export const getServerSideProps: GetStaticProps = async () => {
-  const feed = await prisma.contract.findMany({
-    where: { isPublished: true },
+  const templates = await prisma.contract.findMany({
+    where: { isTemplate: true },
     include: {
       author: {
         select: { name: true },
       },
     },
   });
-  return { props: { feed } };
+  return { props: { templates } };
 };
 
 type Props = {
-  feed: ContractProps[]
+  templates: ContractProps[]
 }
 
 const ContractList: React.FC<Props> = (props) => {
   return (
     <Layout>
       <div className="page">
-        <h1>My Contracts</h1>
+        <h1>Templates</h1>
         <main>
-          {props.feed.map((contract) => (
+          {props.templates.map((contract) => (
             <div key={contract.id} className="contract">
               <Contract contract={contract} />
             </div>
@@ -45,7 +45,7 @@ const ContractList: React.FC<Props> = (props) => {
         }
 
         .contract + .contract {
-          margin-top: 2rem;
+          margin-top: 1rem;
         }
       `}</style>
     </Layout>

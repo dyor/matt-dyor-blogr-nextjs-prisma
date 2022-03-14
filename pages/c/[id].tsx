@@ -22,7 +22,7 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
     },
   });
   return {
-    props: contract,
+    props: JSON.parse(JSON.stringify(contract)),
   };
 };
 
@@ -64,15 +64,13 @@ async function createChildContract(body: ContractProps): Promise<void> {
   contract["isTemplate"] = false;
   contract["isPublished"] = false; 
   //contract["template"] = body.id; 
-  await fetch('/api/contract', {
+  const response = await fetch('/api/contract', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    //'{"id":8,"title":"Title Ping","content":"<p>THis is {FirstPartyName} and {FirstPartyEmail}. </p>","renderedContent":"This is rendered content of main. ","isPublished":false,"isPublic":false,"isTemplate":true,"authorId":2,"firstPartyName":"Matt Dyor","firstPartyEmail":"FPE","firstPartyId":null,"firstPartySignDate":null,"secondPartyName":"Second Party Name","secondPartyEmail":"SPE","secondPartyId":null,"secondPartySignDate":null,"templateId":null,"author":{"name":"Matt Dyor","email":"matt@dyor.com"}}'
-    // body: JSON.stringify(body),
     body: JSON.stringify(contract), 
-  });
-  await Router.push('/drafts');
-  // Router.push("/c/[id]", `/c/${contract.id}`)}>
+  }).then((response) => response.json());
+  await Router.push("/editcontract/[id]", `/editcontract/${response.id}`); 
+  
 }
 
 
@@ -96,13 +94,11 @@ const Contract: React.FC<ContractProps> = (props) => {
       <div>
         <h2>{title}</h2>
         <p>By {props?.author?.name || 'Unknown author'}</p>
+        <div>{props.summary}</div>
+        <hr/>
         <div dangerouslySetInnerHTML={{ __html: cleanHTML }} />
         {/* <ReactMarkdown children={props.content} /> */}
-        {
-          !props.isPublished && userHasValidSession && contractBelongsToUser && (
-          <button onClick={() => publishContract(props.id)}>Publish</button>
-          )
-        }
+        
         {
           userHasValidSession && contractBelongsToUser && (
           <button onClick={() => editContract(props.id)}>Edit</button>

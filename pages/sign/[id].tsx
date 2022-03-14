@@ -6,9 +6,11 @@ import * as yup from 'yup';
 import { GetServerSideProps } from 'next';
 import prisma from '../../lib/prisma';
 import { ContractProps } from '../../components/Contract';
+import Router from 'next/router';
 
 
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { useSession } from 'next-auth/react';
 
 export const getServerSideProps: GetServerSideProps = async ({ params }) => {
   const contract = await prisma.contract.findUnique({
@@ -22,25 +24,46 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
     },
   });
   return {
-    props: contract,
+    props: JSON.parse(JSON.stringify(contract)),
   };
 };
 
 const Sign: React.FC<ContractProps> = (props) => {
+  const { data: session } = useSession();
   const [message, setMessage] = useState(''); // This will be used to show a message if the submission is successful
   const [submitted, setSubmitted] = useState(false);
   const re = new RegExp(props.firstPartyName);
-      
+  let data = {}; 
+
   const formik = useFormik({
     initialValues: {
       // email: 'matt',
       name: '',
       // message: '',
     },
-    onSubmit: () => {
-      setMessage('Form submitted');
-      setSubmitted(true);
-    },
+    onSubmit: async () => {
+      //if session.user.email == props.firstPartyEmail then update firstPartySignDate to today
+      //else if 
+      
+      if (session.user.email == props.firstPartyEmail) {
+        data = {
+          firstPartySignDate: new Date(), 
+        } 
+      }
+      else if (session.user.email == props.secondPartyEmail) {
+        data = {
+          secondPartySignDate: new Date(), 
+        } 
+      }
+        const response = await fetch(`/api/contract/${props.id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data),
+      }).then((response2) => Router.push(`/c/${props.id}`));
+    }, 
+    //   setMessage('Form submitted');
+    //   setSubmitted(true);
+    // },
     validationSchema: yup.object({
       name: yup.string().trim().required('Name is required').matches(re)
       // email: yup
@@ -52,74 +75,141 @@ const Sign: React.FC<ContractProps> = (props) => {
   });
 
   return (
-    <div className="vh-100 d-flex flex-column justify-content-center align-items-center">
-      <div>
-      <div dangerouslySetInnerHTML={{ __html: props.renderedContent }} />
-        
-      </div>
-      <div hidden={!submitted} className="alert alert-primary" role="alert">
-        {message}
+    <>
+      <div className="jumbotron text-center">
+        <h1>Review and Sign Contract</h1>
+        <p>Review contract then type your name in the box below + click "Sign" button to sign contract.  </p>
       </div>
 
-      <form className="w-50" onSubmit={formik.handleSubmit}>
-        <div className="mb-3">
-          <label htmlFor="name" className="form-label">
-            Enter your name ({props.firstPartyName}) below and click sign to sign this contract. 
-          </label>
-          <input
-            type="text"
-            name="name"
-            className="form-control"
-            placeholder={props.firstPartyName}
-            value={formik.values.name}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-          />
-          {formik.errors.name && (
-            <div className="text-danger">{formik.errors.name}</div>
-          )}
+      <div className="container border border-primary">
+        <div className="row">
+          <div className="col-sm-6">
+            <h2>Key Terms</h2>
+            <table className="table table-striped table-hover table-bordered">
+            <tr>
+                <th>
+                    Term
+                </th>
+                <td>
+                    Value
+                </td>
+              </tr>
+              <tr>
+                <td>
+                    &#123;Title&#125;
+                </td>
+                <td>
+                    {props.title}
+                </td>
+              </tr>
+              <tr>
+                <td>
+                    &#123;Summary&#125;
+                </td>
+                <td>
+                    {props.summary}
+                </td>
+              </tr>
+              <tr>
+                <td>
+                    &#123;FirstPartyName&#125;
+                </td>
+                <td>
+                    {props.firstPartyName}
+                </td>
+              </tr>
+              <tr>
+                <td>
+                    &#123;FirstPartyEmail&#125;
+                </td>
+                <td>
+                    {props.firstPartyEmail}
+                </td>
+              </tr>
+              <tr>
+                <td>
+                    &#123;SecondPartyName&#125;
+                </td>
+                <td>
+                    {props.secondPartyName}
+                </td>
+              </tr>
+              <tr>
+                <td>
+                    &#123;SecondPartyEmail&#125;
+                </td>
+                <td>
+                    {props.secondPartyEmail}
+                </td>
+              </tr>
+            </table>
+          </div>
+          <div className="col-sm-6">
+            <div dangerouslySetInnerHTML={{ __html: props.renderedContent }} />
+          </div>
         </div>
+      </div>
+      <div className="jumbotron text-center">
+        <h1>Review and Sign Contract</h1>
+        <div hidden={!submitted} className="alert alert-primary" role="alert">
+          {message}
+        </div>
+        <div>
+          <form onSubmit={formik.handleSubmit} className="form-inline">
+          {formik.errors.name && (
+                <div className="text-danger">{formik.errors.name}</div>
+              )}
+            <div className="form-group">
+              <input
+                type="text"
+                name="name"
+                className="form-control btn-space"
+                placeholder={props.firstPartyName}
+                value={formik.values.name}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+              />
+              <button type="submit" className="btn btn-primary btn-space">
+              Sign
+            </button> 
+            
+            {/* <input disabled={!content || !title} type="submit" value={saveButtonLabel} className="btn btn-primary btn-space" /> */}
+                           
+            
+            <button className="back btn-space btn btn-secondary" onClick={() => Router.push(`/c/${props.id}`)}>Cancel</button>   
 
-        {/* <div className="mb-3">
-          <label htmlFor="email" className="form-label">
-            Email
-          </label>
-          <input
-            type="email"
-            name="email"
-            className="form-control"
-            placeholder="john@example.com"
-            value={formik.values.email}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-          />
-          {formik.errors.email && (
-            <div className="text-danger">{formik.errors.email}</div>
-          )}
-        </div> */}
-{/* 
-        <div className="mb-3">
-          <label htmlFor="message" className="form-label">
-            Message
-          </label>
-          <textarea
-            name="message"
-            className="form-control"
-            placeholder="Your message ..."
-            value={formik.values.message}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-          />
-          {formik.errors.message && (
-            <div className="text-danger">{formik.errors.message}</div>
-          )}
-        </div> */}
+</div>
+<div><em> Enter your name ({props.firstPartyName}) + click sign</em></div>
 
-        <button type="submit" className="btn btn-primary">
-          Sign
-        </button>
-      </form>
-    </div>
+<div>{props.firstPartyName} {props.firstPartyEmail} signed {props.firstPartySignDate? props.firstPartySignDate : "not yet" }</div>
+<div>{props.secondPartyName} {props.secondPartyEmail} signed {props.secondPartySignDate? props.secondPartySignDate : "not yet" }</div>
+
+
+          </form>
+          <style jsx>{`
+            .form-control {
+              display:inline; 
+            }
+            .back {
+              bgcolor: red; 
+            }
+            .btn-space {
+              margin-left: 5px;
+              vertical-align: unset; 
+          }
+            input[type='text'],
+            textarea {
+              width: auto;
+              padding: 0.5rem;
+              margin: 0.5rem 0;
+              border-radius: 0.25rem;
+              border: 0.125rem solid rgba(0, 0, 0, 0.2);
+            }
+            `}
+            </style>
+          </div>
+        </div>
+    </>
   );
 };
 

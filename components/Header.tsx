@@ -15,7 +15,7 @@ const Header: React.FC = () => {
     <div className="left">
       <Link href="/">
         <a className="bold" data-active={isActive('/')}>
-          Feed
+          Templates
         </a>
       </Link>
       <style jsx>{`
@@ -46,8 +46,8 @@ const Header: React.FC = () => {
     left = (
       <div className="left">
         <Link href="/">
-          <a className="bold" data-active={isActive('/')}>
-            Feed
+          <a data-active={isActive('/')}>
+            Templates
           </a>
         </Link>
         <style jsx>{`
@@ -118,12 +118,12 @@ const Header: React.FC = () => {
     left = (
       <div className="left">
         <Link href="/">
-          <a className="bold" data-active={isActive('/')}>
-            Feed
+          <a data-active={isActive('/')}>
+            Templates
           </a>
         </Link>
-        <Link href="/drafts">
-          <a data-active={isActive('/drafts')}>My drafts</a>
+        <Link href="/contracts">
+          <a data-active={isActive('/contracts')}>Contracts</a>
         </Link>
         <style jsx>{`
           .bold {
@@ -151,7 +151,12 @@ const Header: React.FC = () => {
         <p>
           {session.user.name} ({session.user.email})
         </p>
-        <Link href="/create">
+        <Link href="/createcontract">
+          <button>
+            <a>New Template</a>
+          </button>
+        </Link>
+        <Link href="/">
           <button>
             <a>New Contract</a>
           </button>
@@ -186,9 +191,6 @@ const Header: React.FC = () => {
             border-radius: 3px;
           }
 
-          button {
-            border: none;
-          }
         `}</style>
       </div>
     );

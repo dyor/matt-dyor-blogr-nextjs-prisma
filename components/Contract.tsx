@@ -14,13 +14,21 @@ export type ContractProps = {
     name: string;
     email: string;
   } | null;
+  firstParty: {
+    name: string;
+    email: string;
+  } | null;
+  secondParty: {
+    name: string;
+    email: string;
+  } | null;
   firstPartyName: string; 
   firstPartyEmail: string;
   secondPartyName: string;
   secondPartyEmail: string;
   renderedContent: string;
   isPublished: boolean;
-  public: boolean;
+  isPublic: boolean;
   firstPartySignDate: Date;
   secondPartySignDate: Date;
   summary: string;

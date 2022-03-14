@@ -11,8 +11,17 @@ import parse from 'html-react-parser';
 import 'react-quill/dist/quill.snow.css';
 
 import { ContractProps } from './Contract';
-import { useSession } from 'next-auth/react';
+import { getSession, useSession } from 'next-auth/react';
 import prisma from '../lib/prisma';
+import { GetServerSideProps } from 'next';
+
+export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
+    const session = await getSession({ req });
+    if (!session) {
+      res.statusCode = 403;
+      return { props: { contracts: [] } };
+    }
+}
 
 
 
@@ -57,14 +66,18 @@ const formats = [
     'link',
 ]
 
-export { AddEdit };
+type Props = {
+    contract: ContractProps;
+  };
 
-function AddEdit(props) {
-    console.log("yes");
-    console.log(props);
+const AddEdit: React.FC<Props> = (props) => {
+    const { data: session } = useSession();
 
-    const contract = props?.contract;
-    const isAddMode = !contract;
+    const contract = props.contract;
+    const isAddMode = !(contract.id > 0);
+    console.log("isAddMode");
+
+    console.log(contract);
     const router = useRouter();
     // form validation rules 
     const validationSchema = Yup.object().shape({
@@ -76,7 +89,7 @@ function AddEdit(props) {
     const { register, handleSubmit } = useForm();
     //const onSubmit = (data, e) => console.log(data, e);
     const onError = (errors, e) => console.log(errors, e);
-    
+
     const formOptions = { resolver: yupResolver(validationSchema) };
     // get functions to build form with useForm() hook
     //const { register, handleSubmit, reset, formState } = useForm(formOptions);
@@ -89,18 +102,12 @@ function AddEdit(props) {
     const [secondPartyEmail, setSecondPartyEmail] = useState(contract.secondPartyEmail);
     const [content, setContent] = useState(contract.content);
     const [isTemplate, setIsTemplate] = useState(contract.isTemplate);
-
-
-    function checkValue(e) {
-        setIsTemplate(String(e.target.checked));
+    let saveButtonLabel = "Save Contract";
+    if (isTemplate) {
+        saveButtonLabel = "Save Template";
     }
 
-    // const submitDatas = async (e: React.SyntheticEvent) => {
-    //     alert();
-    //     // e.preventDefault();
-       // }
-    const onSubmit = (data, e) => 
-    {
+    const onSubmit = (data, e) => {
         try {
             const renderedContent = content
                 .split("{FirstPartyName}").join(firstPartyName)
@@ -117,124 +124,173 @@ function AddEdit(props) {
         } catch (error) {
             console.error(error);
         }
-
-
-    }
-    function onSubmits(data) {
-        // display form data on success
-        alert('SUCCESS!! :-)\n\n' + JSON.stringify(data, null, 4));
-        return false;
     }
 
-    function createContract(data) {
+
+    async function createContract(data) {
         try {
-            fetch('/api/contract', {
+            const response = await fetch('/api/contract', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(data),
-            });
-            //xxx probably need to look up latest created by
-            Router.push(`/c/${contract.id}`);
+
+            }).then(async (response) =>
+                associateParties(await response.json(), session.user.email)
+                ).then((response2) => Router.push(`/c/${response2}`));
         } catch (error) {
             console.error(error);
         }
     }
 
+    //----------------------------------------------------------------
 
-    function updateContract(id, data) {
-        console.log('in update');
-        console.log(data);
-        fetch(`/api/contract/${id}`, {
+    async function updateContractParties(id, myEmail, myParty) {
+        let data = {}
+        if (myParty == 1) {
+            data = {
+                firstParty: { email: myEmail },
+            };
+        }
+        else {
+            data = {
+                secondParty: { email: myEmail },
+            };
+        }
+        const response = await fetch(`/api/contract/${id}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data),
-        });
-        Router.push(`/c/${contract.id}`);
+        }).then((response) => response.json());
+    }
+
+    async function associateParties(contract: ContractProps, myEmail: string): Promise<number> {
+        if (contract.firstPartyEmail == myEmail) {
+            updateContractParties(contract.id, myEmail, 1);
+        }
+        if (contract.secondPartyEmail == myEmail) {
+            updateContractParties(contract.id, myEmail, 2);
+        }
+        return contract.id;
+    }
+
+    //----------------------
+
+
+    async function updateContract(id, data) {
+        console.log('in update');
+        console.log(data);
+        const response = await fetch(`/api/contract/${id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data),
+        }).then(async (response) =>
+            associateParties(await response.json(), session.user.email)
+        ).then((response2) => Router.push(`/c/${response2}`));
     }
 
     return (
-            <div className="container">
-                <div className="row">
-                    <div className="col-sm">
-                        <h2>Default Template Values or Key Contract Terms</h2>
-                        {/* <form onSubmit={submitData}> */}
-                        <form onSubmit={handleSubmit(onSubmit, onError)}>
-                            <input
-                                autoFocus
-                                onChange={(e) => setTitle(e.target.value)}
-                                placeholder="Title"
-                                type="text"
-                                value={title}
-                            />
-                            {/* <div className="form-group form-check">
-                                <input name="isTemplate" type="checkbox" {...register('isTemplate')} id="isTemplate" className={`form-check-input ${errors.isTemplate ? 'is-invalid' : ''}`} />
-                                <label htmlFor="isTemplate" className="form-check-label">Is Template</label>
-                            </div> */}
-                            {/* Is this a Template? <input id="box1" onChange={checkValue} type="checkbox" value="True" onLoad={checkValue} /> */}
-                            Is this a Template? <input type="checkbox" checked={isTemplate} onChange={() => setIsTemplate(!isTemplate)} />
-                            
-                            <input
-                                onChange={(e) => setSummary(e.target.value)}
-                                placeholder="Summary"
-                                type="text"
-                                value={summary}
-                            />
-                            <input
-                                onChange={(e) => setFirstPartyName(e.target.value)}
-                                placeholder="First Party Name"
-                                type="text"
-                                value={firstPartyName}
-                            />
-                            <input
-                                onChange={(e) => setFirstPartyEmail(e.target.value)}
-                                placeholder="First Party Email"
-                                type="text"
-                                value={firstPartyEmail}
-                            />
-                            <input
-                                onChange={(e) => setSecondPartyName(e.target.value)}
-                                placeholder="Second Party Name"
-                                type="text"
-                                value={secondPartyName}
-                            />
-                            <input
-                                onChange={(e) => setSecondPartyEmail(e.target.value)}
-                                placeholder="Second Party Email"
-                                type="text"
-                                value={secondPartyEmail}
-                            />
-                            {isTemplate}
+        <div className="container">
+            <div className="row">
+                <div className="col-sm">
+                    {
+                        isTemplate == true && (
+                            <h2>Default Template Values </h2>
+                        )}
+                    {
+                        isTemplate == false && (
+                            <h2>Key Contract Terms</h2>
+                        )}
+                    {/* <form onSubmit={submitData}> */}
+                    <label>&#123;Title&#125;</label>
+                    <form onSubmit={handleSubmit(onSubmit, onError)}>
+                        <input
+                            autoFocus
+                            onChange={(e) => setTitle(e.target.value)}
+                            placeholder="Title"
+                            type="text"
+                            value={title}
+                        />
+
+                        <label>&#123;Summary&#125;</label>
+                        <input
+                            onChange={(e) => setSummary(e.target.value)}
+                            placeholder="Summary"
+                            type="text"
+                            value={summary}
+                        />
+                        <label>&#123;FirstPartyName&#125;</label>
+                        <input
+                            onChange={(e) => setFirstPartyName(e.target.value)}
+                            placeholder="First Party Name"
+                            type="text"
+                            value={firstPartyName}
+                        />
+                        <label>&#123;FirstPartyEmail&#125;</label>
+                        <input
+                            onChange={(e) => setFirstPartyEmail(e.target.value)}
+                            placeholder="First Party Email"
+                            type="text"
+                            value={firstPartyEmail}
+                        />
+                        <label>&#123;SecondPartyName&#125;</label>
+                        <input
+                            onChange={(e) => setSecondPartyName(e.target.value)}
+                            placeholder="Second Party Name"
+                            type="text"
+                            value={secondPartyName}
+                        />
+                        <label>&#123;SecondPartyEmail&#125;</label>
+                        <input
+                            onChange={(e) => setSecondPartyEmail(e.target.value)}
+                            placeholder="Second Party Email"
+                            type="text"
+                            value={secondPartyEmail}
+                        />
+
+                        <div>
+                            <input disabled={!content || !title} type="submit" value={saveButtonLabel} className="btn btn-primary btn-space" />
+                            <button className="back btn-space btn btn-secondary" onClick={() => Router.push('/')}>Cancel</button>   
+
                             {
-                                isTemplate == true && (
+                                isTemplate == false && (
                                     <div>
-                                        <QuillNoSSRWrapper modules={modules} placeholder='compose here' value={content} onChange={setContent} formats={formats} theme="snow" />
-                                    </div>
-                                )
-                            }
-                            <div>
-                                <input disabled={!content || !title} type="submit" value="Save Contract" />
-                                <a className="back" href="#" onClick={() => Router.push('/')}>
-                                    or Cancel
-                                </a>
-                            </div>
-                        </form>
-                    </div>
-                    <div className="col-sm">
-                        {/* <p>{value}</p> */}
-                        <h2>Contract Appearance</h2>
-                        {parse(content
-                            .split("{FirstPartyName}").join(firstPartyName)
-                            .split("{FirstPartyEmail}").join(firstPartyEmail)
-                            .split("{SecondPartyName}").join(secondPartyName)
-                            .split("{SecondPartyEmail}").join(secondPartyEmail)
-                            .split("{Summary}").join(summary)
-                            .split("{Title}").join(title))
-                        }
-                    </div>
+                                        Is this a Template? <input type="checkbox" checked={isTemplate} onChange={() => setIsTemplate(!isTemplate)} />
+                                        </div>
+                                )}
 
-
+                        </div>
+                    </form>
                 </div>
-            
+                <div className="col-sm">
+
+                    {
+                        isTemplate == true && (
+                            <>
+                                <h2>Template Body</h2>
+                                <div>
+                                    <br />
+                                    <QuillNoSSRWrapper modules={modules} placeholder='compose here' value={content} onChange={setContent} formats={formats} theme="snow" />
+                                    <br /><i>&#123;ContractTerms&#125; will be replaced.</i><br /><hr /><br />
+                                </div>
+                            </>
+                        )
+                    }
+
+
+                    <h2>Contract Preview</h2>
+                    {parse(content
+                        .split("{FirstPartyName}").join(firstPartyName)
+                        .split("{FirstPartyEmail}").join(firstPartyEmail)
+                        .split("{SecondPartyName}").join(secondPartyName)
+                        .split("{SecondPartyEmail}").join(secondPartyEmail)
+                        .split("{Summary}").join(summary)
+                        .split("{Title}").join(title))
+                    }
+                </div>
+
+
+            </div>
+
             <style jsx>{`
             .page {
               background: var(--geist-background);
@@ -243,10 +299,12 @@ function AddEdit(props) {
               justify-content: center;
               align-items: center;
             }
+            input {
+                display: inline;
+            }
     
     
             input[type='text'],
-            input[type='submit'],
             textarea {
               width: 100%;
               padding: 0.5rem;
@@ -254,7 +312,10 @@ function AddEdit(props) {
               border-radius: 0.25rem;
               border: 0.125rem solid rgba(0, 0, 0, 0.2);
             }
-    
+            .btn-space {
+                margin-left: 5px;
+                vertical-align: unset; 
+            }
             
     
             input[type='submit']:disabled {
@@ -272,6 +333,8 @@ function AddEdit(props) {
               margin-left: 1rem;
             }
           `}</style>
-          </div>
+        </div>
     );
 }
+
+export default AddEdit;

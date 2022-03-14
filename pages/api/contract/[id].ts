@@ -13,11 +13,22 @@ export default async function handle(req, res) {
   }
   else if (req.method === 'PUT') {
     const contractId = req.query.id;
-    console.log('ding'); 
-    console.log(req.body);
-    const contract = await prisma.contract.update({
-      where: { id: Number(contractId) },
-      data: { 
+    let myData = {};
+    
+    if (req.body.firstParty) {
+      myData = {firstParty: {connect: {email: req.body.firstParty.email}}}; 
+    }
+    else if (req.body.secondParty) {
+      myData = {secondParty: {connect: {email: req.body.secondParty.email}}}; 
+    }
+    else if (req.body.firstPartySignDate) {
+      myData = {firstPartySignDate: new Date()}; 
+    }
+    else if (req.body.secondPartySignDate) {
+      myData = {secondPartySignDate: new Date()}; 
+    }
+    else {
+      myData = {
         title: req.body.title, 
         summary: req.body.summary, 
         content: req.body.content, 
@@ -28,11 +39,14 @@ export default async function handle(req, res) {
         renderedContent: req.body.renderedContent, 
         isTemplate: Boolean(req.body.isTemplate),
         isPublished: Boolean(req.body.isPublished), 
-        // isPUblic: req.body.isPublic, 
-
+      }
+      
+    }
+    const contract = await prisma.contract.update({
+      where: { id: Number(contractId) },
+      data: myData,
       },
-
-    });
+    );
     res.json(contract);
   }
   else {

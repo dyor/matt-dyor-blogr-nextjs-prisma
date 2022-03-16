@@ -14,24 +14,68 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
     return { props: { contracts: [] } };
   }
 
+
+
+  const toSignContracts = await prisma.contract.findMany({
+    where: {
+      AND: [{
+        isTemplate: false, 
+        OR: [{
+          AND: [{
+            firstPartySignDate: null, 
+          }, 
+          {
+            firstPartyEmail: session.user.email
+          }]
+        },
+        {
+          AND: [{
+            secondPartySignDate: null, 
+          }, {
+            secondPartyEmail: session.user.email
+          }]
+        },
+        ],
+      }]
+    },
+    select: {
+      id: true, 
+      title: true, 
+      summary: true,  
+      author: {
+        select: { name: true },
+      },
+    },
+  });//.then(() => createChildContract(contracts, session?.user?.email));
+  
+
+
+
+
+
   const contracts = await prisma.contract.findMany({
     where: {
       // author: { email: session.user.email },xxx make a new page for if I am first or second signer and I need to sign
       isTemplate: false,
     },
-    include: {
+    select: {
+      id: true, 
+      title: true, 
+      summary: true, 
       author: {
         select: { name: true },
       },
     },
   });
   return {
-    props: { contracts },
+    props: { contracts, toSignContracts },
   };
+  
 };
 
 type Props = {
-  contracts: ContractProps[];
+  contracts: ContractProps[], 
+  toSignContracts: ContractProps[];
 };
 
 const Contracts: React.FC<Props> = (props) => {
@@ -49,7 +93,18 @@ const Contracts: React.FC<Props> = (props) => {
   return (
     <Layout>
       <div className="page">
-        <h1>Contracts</h1>
+        <h1>Contracts Needing My Signature</h1>
+        <main>
+          {props.toSignContracts.map((contract) => (
+            <div key={contract.id} className="contract">
+              <Contract contract={contract} />
+            </div>
+          ))}
+        </main>
+      </div>
+
+      <div className="page">
+        <h1>My Contracts</h1>
         <main>
           {props.contracts.map((contract) => (
             <div key={contract.id} className="contract">
@@ -58,20 +113,6 @@ const Contracts: React.FC<Props> = (props) => {
           ))}
         </main>
       </div>
-      <style jsx>{`
-        .contract {
-          background: white;
-          transition: box-shadow 0.1s ease-in;
-        }
-
-        .contract:hover {
-          box-shadow: 1px 1px 3px #aaa;
-        }
-
-        .contract + .contract {
-          margin-top: 1rem;
-        }
-      `}</style>
     </Layout>
   );
 };

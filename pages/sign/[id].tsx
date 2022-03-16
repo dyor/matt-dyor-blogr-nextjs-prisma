@@ -81,7 +81,7 @@ const Sign: React.FC<ContractProps> = (props) => {
         <p>Review contract then type your name in the box below + click "Sign" button to sign contract.  </p>
       </div>
 
-      <div className="container border border-primary">
+      <div className="container border border-secondary">
         <div className="row">
           <div className="col-sm-6">
             <h2>Key Terms</h2>

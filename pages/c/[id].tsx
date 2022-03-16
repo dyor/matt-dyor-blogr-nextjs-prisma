@@ -92,35 +92,108 @@ const Contract: React.FC<ContractProps> = (props) => {
   return (
     <Layout>
       <div>
-        <h2>{title}</h2>
-        <p>By {props?.author?.name || 'Unknown author'}</p>
-        <div>{props.summary}</div>
-        <hr/>
-        <div dangerouslySetInnerHTML={{ __html: cleanHTML }} />
-        {/* <ReactMarkdown children={props.content} /> */}
-        
+      <div className="container border border-secondary contract">
+        <div className="row">
+          <div className="col-sm-6">
+            <h2>Key Terms</h2>
+            <table className="table table-striped table-hover table-bordered">
+            <tr>
+                <th>
+                    Term
+                </th>
+                <td>
+                    Value
+                </td>
+              </tr>
+              <tr>
+                <td>
+                    &#123;Title&#125;
+                </td>
+                <td>
+                    {props.title}
+                </td>
+              </tr>
+              <tr>
+                <td>
+                    &#123;Summary&#125;
+                </td>
+                <td>
+                    {props.summary}
+                </td>
+              </tr>
+              <tr>
+                <td>
+                    &#123;FirstPartyName&#125;
+                </td>
+                <td>
+                    {props.firstPartyName}
+                </td>
+              </tr>
+              <tr>
+                <td>
+                    &#123;FirstPartyEmail&#125;
+                </td>
+                <td>
+                    {props.firstPartyEmail}
+                </td>
+              </tr>
+              <tr>
+                <td>
+                    &#123;SecondPartyName&#125;
+                </td>
+                <td>
+                    {props.secondPartyName}
+                </td>
+              </tr>
+              <tr>
+                <td>
+                    &#123;SecondPartyEmail&#125;
+                </td>
+                <td>
+                    {props.secondPartyEmail}
+                </td>
+              </tr>
+            </table>
+          </div>
+          <div className="col-sm-6">
+            <div dangerouslySetInnerHTML={{ __html: props.renderedContent }} />
+          </div>
+        </div>
+      </div>
+      <br/>
+      <div className="jumbotron text-center">
         {
           userHasValidSession && contractBelongsToUser && (
-          <button onClick={() => editContract(props.id)}>Edit</button>
+          <button onClick={() => editContract(props.id)} className="btn btn-primary btn-space">Edit</button>
           )
         }
         {
           userHasValidSession && contractBelongsToUser && (
-            <button onClick={() => deleteContract(props.id)}>Delete</button>
+            <button onClick={() => deleteContract(props.id)} className="btn btn-danger btn-space">Delete</button>
           )
         }
         {
           props.isTemplate &&  (
-            <button onClick={() => createChildContract(props)}>Create Child Contract</button> 
+            <button onClick={() => createChildContract(props)} className="btn btn-success btn-space">Create Child Contract</button> 
           )
         }
         {
-          !props.isTemplate &&  (
-            <button onClick={() => signContract(props.id)}>Sign Contract</button> 
+          !props.isTemplate && props.firstPartyEmail == session.user.email && props.firstPartySignDate==null && (
+            <button onClick={() => signContract(props.id)} className="btn btn-success btn-space">Sign Contract</button> 
           )
         }
+        {
+          !props.isTemplate && props.secondPartyEmail == session.user.email && props.secondPartySignDate==null && (
+            <button onClick={() => signContract(props.id)} className="btn btn-success btn-space">Sign Contract</button> 
+          )
+        }
+        </div>
       </div>
       <style jsx>{`
+        .btn-space {
+            margin-left: 5px;
+            vertical-align: unset; 
+        }
         .page {
           background: var(--geist-background);
           padding: 2rem;
@@ -129,17 +202,20 @@ const Contract: React.FC<ContractProps> = (props) => {
         .actions {
           margin-top: 2rem;
         }
-
-        button {
-          background: #ececec;
-          border: 0;
-          border-radius: 0.125rem;
-          padding: 1rem 2rem;
+        
+        .contract {
+          background: white;
+          transition: box-shadow 0.1s ease-in;
         }
 
-        button + button {
-          margin-left: 1rem;
+        .contract:hover {
+          box-shadow: 1px 1px 3px #aaa;
         }
+
+        .contract + .contract {
+          margin-top: 1rem;
+        }
+
       `}</style>
     </Layout>
   );

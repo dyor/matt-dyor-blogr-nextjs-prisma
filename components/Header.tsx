@@ -117,13 +117,17 @@ const Header: React.FC = () => {
   if (session) {
     left = (
       <div className="left">
-        <Link href="/">
+        {/* <Link href="/">
           <a data-active={isActive('/')}>
-            Templates
+          <button className="btn btn-primary btn-space">Templates
+            </button>
           </a>
-        </Link>
+        </Link> */}
         <Link href="/contracts">
-          <a data-active={isActive('/contracts')}>Contracts</a>
+          <a data-active={isActive('/contracts')}>
+          <button className="btn btn-primary btn-space">My Contracts
+            </button>
+            </a>
         </Link>
         <style jsx>{`
           .bold {
@@ -152,19 +156,23 @@ const Header: React.FC = () => {
           {session.user.name} ({session.user.email})
         </p>
         <Link href="/createcontract">
-          <button>
+          <button className="btn btn-success btn-space">
             <a>New Template</a>
           </button>
         </Link>
         <Link href="/">
-          <button>
+          <button className="btn btn-success btn-space">
             <a>New Contract</a>
           </button>
         </Link>
-        <button onClick={() => signOut()}>
-          <a>Log out</a>
+        <button className="btn btn-secondary btn-space" onClick={() => signOut()}>
+          <a >Log out</a>
         </button>
         <style jsx>{`
+          .btn-space {
+              margin-left: 5px;
+              vertical-align: unset; 
+          }
           a {
             text-decoration: none;
             color: var(--geist-foreground);

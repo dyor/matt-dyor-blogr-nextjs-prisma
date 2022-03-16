@@ -25,7 +25,7 @@ const ContractList: React.FC<Props> = (props) => {
   return (
     <Layout>
       <div className="page">
-        <h1>Templates</h1>
+        <h1>Contract Templates</h1>
         <main>
           {props.templates.map((contract) => (
             <div key={contract.id} className="contract">

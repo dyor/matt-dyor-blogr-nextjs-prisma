@@ -261,7 +261,7 @@ const AddEdit: React.FC<Props> = (props) => {
                         </div>
                     </form>
                 </div>
-                <div className="col-sm">
+                <div className="col-sm contract" >
 
                     {
                         isTemplate == true && (
@@ -279,12 +279,14 @@ const AddEdit: React.FC<Props> = (props) => {
 
                     <h2>Contract Preview</h2>
                     {parse(content
-                        .split("{FirstPartyName}").join(firstPartyName)
-                        .split("{FirstPartyEmail}").join(firstPartyEmail)
-                        .split("{SecondPartyName}").join(secondPartyName)
-                        .split("{SecondPartyEmail}").join(secondPartyEmail)
-                        .split("{Summary}").join(summary)
-                        .split("{Title}").join(title))
+                        .split("{FirstPartyName}").join(firstPartyName ? firstPartyName : "<strong>{FirstPartyName}</strong>")
+                        .split("{FirstPartyEmail}").join(firstPartyEmail ? firstPartyEmail : "<strong>{FirstPartyEmail}</strong>")
+                        .split("{SecondPartyName}").join(secondPartyName ? secondPartyName : "<strong>{SecondPartyName}</strong>")
+                        .split("{SecondPartyEmail}").join(secondPartyEmail ? secondPartyEmail : "<strong>{SecondPartyEmail}</strong>")
+                        .split("{Summary}").join(summary ? summary : "<strong>{Summary}</strong>")
+                        .split("{Title}").join(title ? title : "<strong>{Title}</strong>")
+
+                        )
                     }
                 </div>
 

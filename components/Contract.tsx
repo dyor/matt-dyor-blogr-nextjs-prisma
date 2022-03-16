@@ -2,6 +2,7 @@ import React from "react";
 import Router from "next/router";
 import ReactMarkdown from "react-markdown";
 import DOMPurify from "dompurify";
+import Link from "next/link";
 
 
 
@@ -36,7 +37,26 @@ export type ContractProps = {
   
 };
 
-
+async function createChildContract(body: ContractProps): Promise<void> {
+  //populate the parent id
+  var contract = {} ;
+  var key ;
+  for ( key in body )
+  {
+    // copy each property into the clone
+    contract[ key ] = body[ key ] ;
+  }
+  contract["isTemplate"] = false;
+  contract["isPublished"] = false; 
+  //contract["template"] = body.id; 
+  const response = await fetch('/api/contract', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(contract), 
+  }).then((response) => response.json());
+  await Router.push("/editcontract/[id]", `/editcontract/${response.id}`); 
+  
+}
 
 
 const Contract: React.FC<{ contract: ContractProps }> = ({ contract }) => {
@@ -56,10 +76,27 @@ const Contract: React.FC<{ contract: ContractProps }> = ({ contract }) => {
       <div>
           {contract.summary}
       </div>
+      {
+          contract.isTemplate &&  (
+      <>
+        <button onClick={() => createChildContract(contract)} className="btn btn-success btn-space">Create Contract from Template
+        </button>
+        <button onClick={() => Router.push("/c/[id]", `/c/${contract.id}`)} className="btn btn-secondary btn-space">Template Details</button>
+        </>
+          )
+      } 
+      
+      {
+        !contract.isTemplate &&  (
+    
+          <button onClick={() => Router.push("/c/[id]", `/c/${contract.id}`)} className="btn btn-secondary btn-space">Contract Details</button>
+      
+        )
+      }
       <style jsx>{`
         div {
           color: inherit;
-          padding: 2rem;
+          padding: 1rem;
         }
       `}</style>
     </div>

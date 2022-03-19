@@ -139,6 +139,14 @@ const Contract: React.FC<ContractProps> = (props) => {
               </tr>
               <tr>
                 <td>
+                    &#123;FirstPartySignDate&#125;
+                </td>
+                <td>
+                    {props.firstPartySignDate}
+                </td>
+              </tr>
+              <tr>
+                <td>
                     &#123;SecondPartyName&#125;
                 </td>
                 <td>
@@ -151,6 +159,22 @@ const Contract: React.FC<ContractProps> = (props) => {
                 </td>
                 <td>
                     {props.secondPartyEmail}
+                </td>
+              </tr>
+              <tr>
+                <td>
+                    &#123;SecondPartySignDate&#125;
+                </td>
+                <td>
+                    {props.secondPartySignDate}
+                </td>
+              </tr>
+              <tr>
+                <td>
+                    &#123;Amount&#125;
+                </td>
+                <td>
+                    {props.amount}
                 </td>
               </tr>
             </table>
@@ -185,6 +209,16 @@ const Contract: React.FC<ContractProps> = (props) => {
         {
           !props.isTemplate && props.secondPartyEmail == session.user.email && props.secondPartySignDate==null && (
             <button onClick={() => signContract(props.id)} className="btn btn-success btn-space">Sign Contract</button> 
+          )
+        }
+         {
+          !props.isTemplate && !(props.firstPartyEmail == session.user.email) && props.firstPartySignDate==null && (
+            <button onClick={() => signContract(props.id)} className="btn btn-success btn-space">Send for sigxxx</button> 
+          )
+        }
+        {
+          !props.isTemplate && (!(props.secondPartyEmail == session.user.email)) && props.secondPartySignDate==null && (
+            <button onClick={() => signContract(props.id)} className="btn btn-success btn-space">Send for Sigxxx</button> 
           )
         }
         </div>

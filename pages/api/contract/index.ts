@@ -5,10 +5,12 @@ import prisma from '../../../lib/prisma';
 
 // CONTRACT /api/contract
 export default async function handle(req, res) {
-  const { title, content, summary, firstPartyName, firstPartyEmail, secondPartyName, secondPartyEmail, firstPartySignDate, secondPartySignDate, isPublic, renderedContent, isTemplate, template } = req.body;
+  const { title, content, summary, firstPartyName, firstPartyEmail, secondPartyName, secondPartyEmail, firstPartySignDate, secondPartySignDate, isPublic, renderedContent, isTemplate, template, startDate, endDate, amount, showAmount } = req.body;
   const session = await getSession({ req });
-
-
+  console.log('duration cracked');
+  
+  let sdt = new Date(startDate);
+  let edt = new Date(startDate);
   const result = await prisma.contract.create({
     data: {
       title: title,
@@ -24,9 +26,13 @@ export default async function handle(req, res) {
       renderedContent: renderedContent,
       isTemplate: isTemplate, 
       author: { connect: { email: session?.user?.email } },
+      startDate:  sdt, 
+      endDate: edt, 
+      amount: amount, 
+      showAmount: showAmount, 
     },
   });
 
   res.json(result);
-  console.log(result); 
+
 }

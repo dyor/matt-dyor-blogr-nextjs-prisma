@@ -19,9 +19,8 @@ type Props = {
   integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3"
 />
 
-const Layout: React.FC<Props> = (props) => (
+const LayoutSkinny: React.FC<Props> = (props) => (
   <div>
-    <Header />
     <div className="layout">{props.children}</div>
     <style jsx global>{`
       html {
@@ -49,32 +48,18 @@ const Layout: React.FC<Props> = (props) => (
         font-size: 16px;
       }
 
-      
+      button {
+        cursor: pointer;
+      }
       .layout {
         padding: 0 2rem;
       }
       textarea, input {
         display: block;
-        width: 100%;
-        border-radius: 0.25rem;
-        border: 0.125rem solid rgba(0, 0, 0, 0.2);
-        padding: 0.5rem;
-        margin: 0.5rem 0;
-      }
-      input[type="checkbox"] {
-        display: inline;
         width: auto;
-        border-radius: 0.25rem;
-        border: 0.125rem solid rgba(0, 0, 0, 0.2);
-        padding: 0.5rem;
-        margin: 0.5rem 0;
-      }
-      button {
-        cursor: pointer;
-        width: auto; 
       }
     `}</style>
   </div>
 );
 
-export default Layout;
+export default LayoutSkinny;

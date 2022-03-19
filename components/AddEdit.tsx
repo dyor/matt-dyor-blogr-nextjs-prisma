@@ -9,11 +9,15 @@ import dynamic from 'next/dynamic'
 
 import parse from 'html-react-parser';
 import 'react-quill/dist/quill.snow.css';
+import 'react-quill/dist/quill.bubble.css';
 
 import { ContractProps } from './Contract';
 import { getSession, useSession } from 'next-auth/react';
 import prisma from '../lib/prisma';
 import { GetServerSideProps } from 'next';
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import parseISO from 'date-fns/parseISO'
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
     const session = await getSession({ req });
@@ -75,7 +79,6 @@ const AddEdit: React.FC<Props> = (props) => {
 
     const contract = props.contract;
     const isAddMode = !(contract.id > 0);
-    console.log("isAddMode");
 
     console.log(contract);
     const router = useRouter();
@@ -102,6 +105,14 @@ const AddEdit: React.FC<Props> = (props) => {
     const [secondPartyEmail, setSecondPartyEmail] = useState(contract.secondPartyEmail);
     const [content, setContent] = useState(contract.content);
     const [isTemplate, setIsTemplate] = useState(contract.isTemplate);
+    const [startDate, setStartDate] = useState(contract.startDate); 
+    const [endDate, setEndDate] = useState(contract.endDate); 
+    const [amount, setAmount] = useState(contract.amount);
+    const [showAmount, setShowAmount] = useState(contract.showAmount); 
+    const [firstPartySignDate, setFirstPartySignDate] = useState(contract.firstPartySignDate); 
+    const [secondPartySignDate, setSecibdPartySignDate] = useState(contract.secondPartySignDate); 
+
+    const [] = useState(); 
     let saveButtonLabel = "Save Contract";
     if (isTemplate) {
         saveButtonLabel = "Save Template";
@@ -115,8 +126,12 @@ const AddEdit: React.FC<Props> = (props) => {
                 .split("{SecondPartyName}").join(secondPartyName)
                 .split("{SecondPartyEmail}").join(secondPartyEmail)
                 .split("{Summary}").join(summary)
+                .split("{Amount}").join(amount.toString())
+                .split("{StartDate}").join(new Date(startDate).toLocaleDateString())
+                .split("{EndDate}").join(new Date(endDate).toLocaleDateString())
                 .split("{Title}").join(title).toString();
-            const body = { title, content, summary, firstPartyName, firstPartyEmail, secondPartyName, secondPartyEmail, renderedContent, isTemplate };
+               
+            const body = { title, content, summary, firstPartyName, firstPartyEmail, secondPartyName, secondPartyEmail, renderedContent, isTemplate, startDate, endDate, amount, showAmount };
 
             return isAddMode
                 ? createContract(body)
@@ -129,6 +144,7 @@ const AddEdit: React.FC<Props> = (props) => {
 
     async function createContract(data) {
         try {
+
             const response = await fetch('/api/contract', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -177,8 +193,6 @@ const AddEdit: React.FC<Props> = (props) => {
 
 
     async function updateContract(id, data) {
-        console.log('in update');
-        console.log(data);
         const response = await fetch(`/api/contract/${id}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
@@ -190,6 +204,7 @@ const AddEdit: React.FC<Props> = (props) => {
 
     return (
         <div className="container">
+         <form onSubmit={handleSubmit(onSubmit, onError)}>
             <div className="row">
                 <div className="col-sm">
                     {
@@ -200,9 +215,8 @@ const AddEdit: React.FC<Props> = (props) => {
                         isTemplate == false && (
                             <h2>Key Contract Terms</h2>
                         )}
-                    {/* <form onSubmit={submitData}> */}
                     <label>&#123;Title&#125;</label>
-                    <form onSubmit={handleSubmit(onSubmit, onError)}>
+
                         <input
                             autoFocus
                             onChange={(e) => setTitle(e.target.value)}
@@ -246,37 +260,68 @@ const AddEdit: React.FC<Props> = (props) => {
                             type="text"
                             value={secondPartyEmail}
                         />
-
+                        
+                        <label>&#123;StartDate&#125;</label>
+                                <DatePicker selected={new Date(startDate)} onChange={(date) => setStartDate(date)} />
+                            <label>&#123;EndDate&#125;</label>
+                                <DatePicker selected={new Date(endDate)} onChange={(date) => setEndDate(date)} />
+                             
+                        {
+                                isTemplate == true && (
+                                    <div>
+                                        Show Amount field? <input type="checkbox" checked={showAmount} onChange={() => setShowAmount(!showAmount)} />
+                                    </div>
+                                )
+                        }
+                        {
+                                showAmount == true && (
+                                    <div>
+                                
+                        <label>&#123;Amount&#125;</label>
+                        <input
+                            onChange={(e) => setAmount(parseFloat(e.target.value))}
+                            placeholder="Amount"
+                            type="number"
+                            value={amount}
+                        />
+                        </div>
+                        )}
                         <div>
-                            <input disabled={!content || !title} type="submit" value={saveButtonLabel} className="btn btn-primary btn-space" />
+                            <button disabled={!content || !title} type="submit"  className="btn btn-primary btn-space" onSubmit={handleSubmit(onSubmit, onError)}>{saveButtonLabel}</button>
                             <button className="back btn-space btn btn-secondary" onClick={() => Router.push('/')}>Cancel</button>   
-
-                            {
+                            
+                        </div>
+                        <hr />
+                        <h2>Calculated Fields</h2>
+                        <div>&#123;FirstPartySignDate&#125;</div>
+                        <div>{firstPartySignDate}</div>
+                        <div></div>
+                        <div>&#123;SecondPartySignDate&#125;</div>
+                        <div>{secondPartySignDate}</div>
+                        {
                                 isTemplate == false && (
                                     <div>
-                                        Is this a Template? <input type="checkbox" checked={isTemplate} onChange={() => setIsTemplate(!isTemplate)} />
+                                        Convert this to a Template? <input type="checkbox" checked={isTemplate} onChange={() => setIsTemplate(!isTemplate)} />
                                         </div>
-                                )}
-
-                        </div>
-                    </form>
+                                )
+                        }
+                        
                 </div>
-                <div className="col-sm contract" >
-
+                <div className="col-sm" >
                     {
                         isTemplate == true && (
                             <>
-                                <h2>Template Body</h2>
                                 <div>
-                                    <br />
+                                <h2>Template Body</h2>
+                                <br />
+                                <div className="white"> 
                                     <QuillNoSSRWrapper modules={modules} placeholder='compose here' value={content} onChange={setContent} formats={formats} theme="snow" />
-                                    <br /><i>&#123;ContractTerms&#125; will be replaced.</i><br /><hr /><br />
+                                </div>
+                                <br /><i>&#123;ContractTerms&#125; will be replaced.</i><br /><hr /><br />
                                 </div>
                             </>
                         )
                     }
-
-
                     <h2>Contract Preview</h2>
                     {parse(content
                         .split("{FirstPartyName}").join(firstPartyName ? firstPartyName : "<strong>{FirstPartyName}</strong>")
@@ -285,14 +330,15 @@ const AddEdit: React.FC<Props> = (props) => {
                         .split("{SecondPartyEmail}").join(secondPartyEmail ? secondPartyEmail : "<strong>{SecondPartyEmail}</strong>")
                         .split("{Summary}").join(summary ? summary : "<strong>{Summary}</strong>")
                         .split("{Title}").join(title ? title : "<strong>{Title}</strong>")
-
+                        .split("{StartDate}").join(startDate ? parseISO(startDate.toString()).toLocaleDateString() : "<strong>{StartDate}</strong>")
+                        .split("{Amount}").join(amount ? amount?.toString() : "<strong>{Amount}</strong>")
+                        .split("{EndDate}").join(endDate ? parseISO(endDate.toString()).toLocaleDateString() : "<strong>{EndDate}</strong>")
+                        
                         )
                     }
                 </div>
-
-
             </div>
-
+            </form>
             <style jsx>{`
             .page {
               background: var(--geist-background);
@@ -301,12 +347,14 @@ const AddEdit: React.FC<Props> = (props) => {
               justify-content: center;
               align-items: center;
             }
-            input {
-                display: inline;
+            .white, .quill, .ql-snow  {
+                background: white;
             }
-    
-    
+            
+            .react-datepicker-ignore-onclickoutside, 
+            .input,  
             input[type='text'],
+            input[type='number'],
             textarea {
               width: 100%;
               padding: 0.5rem;
@@ -323,12 +371,13 @@ const AddEdit: React.FC<Props> = (props) => {
             input[type='submit']:disabled {
               color: #ccc;
               cursor: no-drop;
+              width: auto; 
             }
     
             input[type='submit']:enabled {
               background: steelblue; 
               border: 0;
-              padding: 1rem 2rem;
+              width: 100%; 
             }
     
             .back {
@@ -340,3 +389,12 @@ const AddEdit: React.FC<Props> = (props) => {
 }
 
 export default AddEdit;
+
+function addMonths(date :Date, months :number) {
+    var d = date.getDate();
+    date.setMonth(date.getMonth() + +months);
+    if (date.getDate() != d) {
+      date.setDate(0);
+    }
+    return date.toLocaleDateString();
+}

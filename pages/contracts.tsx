@@ -19,18 +19,18 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
   const toSignContracts = await prisma.contract.findMany({
     where: {
       AND: [{
-        isTemplate: false, 
+        isTemplate: false,
         OR: [{
           AND: [{
-            firstPartySignDate: null, 
-          }, 
+            firstPartySignDate: null,
+          },
           {
             firstPartyEmail: session.user.email
           }]
         },
         {
           AND: [{
-            secondPartySignDate: null, 
+            secondPartySignDate: null,
           }, {
             secondPartyEmail: session.user.email
           }]
@@ -39,43 +39,93 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
       }]
     },
     select: {
-      id: true, 
-      title: true, 
-      summary: true,  
+      id: true,
+      title: true,
+      summary: true,
       author: {
         select: { name: true },
       },
+      firstPartyEmail: true, 
+      secondPartyEmail: true,
+      firstPartySignDate: true, 
+      secondPartySignDate: true, 
     },
-  });//.then(() => createChildContract(contracts, session?.user?.email));
-  
+  });
 
-
-
-
+  const toSignByOthersContracts = await prisma.contract.findMany({
+    where: {
+      AND: [{
+        isTemplate: false,
+        author: { email: session.user.email },
+        OR: [{
+          AND: [{
+            firstPartySignDate: null,
+          },
+          {
+            NOT: {
+              firstPartyEmail: session.user.email
+            }
+          }]
+        },
+        {
+          AND: [{
+            secondPartySignDate: null,
+          }, {
+            NOT: {
+              secondPartyEmail: session.user.email
+            }
+          }]
+        },
+        ],
+      }]
+    },
+    select: {
+      id: true,
+      title: true,
+      summary: true,
+      author: {
+        select: { name: true },
+      },
+      firstPartyEmail: true, 
+      secondPartyEmail: true,
+      firstPartySignDate: true, 
+      secondPartySignDate: true, 
+    },
+  });
 
   const contracts = await prisma.contract.findMany({
     where: {
-      // author: { email: session.user.email },xxx make a new page for if I am first or second signer and I need to sign
       isTemplate: false,
+      OR: [
+        { author: { email: session.user.email }, }, 
+        { firstPartyEmail: session.user.email, },
+        { secondPartyEmail: session.user.email, },
+      ],
+      
     },
     select: {
-      id: true, 
-      title: true, 
-      summary: true, 
+      id: true,
+      title: true,
+      summary: true,
       author: {
         select: { name: true },
       },
+      firstPartyEmail: true, 
+      secondPartyEmail: true,
+      firstPartySignDate: true, 
+      secondPartySignDate: true, 
     },
   });
   return {
-    props: { contracts, toSignContracts },
+    props: JSON.parse(JSON.stringify({ contracts, toSignContracts, toSignByOthersContracts })),
   };
-  
+
 };
 
 type Props = {
-  contracts: ContractProps[], 
-  toSignContracts: ContractProps[];
+  contracts: ContractProps[],
+  toSignContracts: ContractProps[],
+  toSignByOthersContracts: ContractProps[];
 };
 
 const Contracts: React.FC<Props> = (props) => {
@@ -92,23 +142,41 @@ const Contracts: React.FC<Props> = (props) => {
 
   return (
     <Layout>
-      <div className="page">
-        <h1>Contracts Needing My Signature</h1>
-        <main>
-          {props.toSignContracts.map((contract) => (
-            <div key={contract.id} className="contract">
-              <Contract contract={contract} />
-            </div>
-          ))}
-        </main>
-      </div>
+      {props.toSignContracts.length > 0 && (
+        <div className="page">
+          <h1>Contracts Needing My Signature</h1>
+          <main>
+            {props.toSignContracts.map((contract) => (
+              <div key={contract.id} className="contract">
+                <Contract contract={contract} myEmail={session.user.email} />
+              </div>
+            ))}
+          </main>
+        </div>
+      )
+
+      }
+      {props.toSignByOthersContracts.length > 0 && (
+        <div className="page">
+          <h1>Contracts Signatures from Others</h1>
+          <main>
+            {props.toSignByOthersContracts.map((contract) => (
+              <div key={contract.id} className="contract">
+                <Contract contract={contract} myEmail={session.user.email} />
+              </div>
+            ))}
+          </main>
+        </div>
+      )
+
+      }
 
       <div className="page">
         <h1>My Contracts</h1>
         <main>
           {props.contracts.map((contract) => (
             <div key={contract.id} className="contract">
-              <Contract contract={contract} />
+              <Contract contract={contract} myEmail={session.user.email}/>
             </div>
           ))}
         </main>

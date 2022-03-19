@@ -28,6 +28,7 @@ export default async function handle(req, res) {
       myData = {secondPartySignDate: new Date()}; 
     }
     else {
+
       myData = {
         title: req.body.title, 
         summary: req.body.summary, 
@@ -39,6 +40,10 @@ export default async function handle(req, res) {
         renderedContent: req.body.renderedContent, 
         isTemplate: Boolean(req.body.isTemplate),
         isPublished: Boolean(req.body.isPublished), 
+        startDate: req.body.startDate, 
+        endDate: req.body.endDate, 
+        amount: req.body.amount, 
+        showAmount: Boolean(req.body.showAmount),
       }
       
     }
@@ -48,6 +53,7 @@ export default async function handle(req, res) {
       },
     );
     res.json(contract);
+    console.log(contract);
   }
   else {
     throw new Error(

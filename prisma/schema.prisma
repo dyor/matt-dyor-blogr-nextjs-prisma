@@ -31,8 +31,21 @@ model Contract {
   template Contract? @relation(name: "children", fields: [templateId], references: [id])
   templateId Int? 
   children    Contract[] @relation("children")
-
-
+  startDate DateTime? @default(now())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+  duration Int? 
+  endDate DateTime? 
+  amount Decimal? 
+  interestRate Decimal? 
+  royaltyRate Decimal? 
+  royaltyMultiple Decimal? 
+  equityPercentage Decimal? 
+  showAmount Boolean @default(false)
+  showInterestRate Boolean @default(false)
+  showRoyaltyRate Boolean @default(false)
+  showRoyaltyMultiple Boolean @default(false)
+  showEquityPercentage Boolean @default(false)
   // SecondParty    User?   @relation(name: "secondParty", fields: [secondPartyId], references: [id])
   // secondPartyId  Int?
   

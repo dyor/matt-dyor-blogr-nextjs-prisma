@@ -33,6 +33,12 @@ export type ContractProps = {
   firstPartySignDate: Date;
   secondPartySignDate: Date;
   summary: string;
+  startDate: Date; 
+  duration: number;
+  endDate: Date;
+  amount: number;
+  showAmount: boolean;
+
   //template: number; 
   
 };
@@ -59,7 +65,8 @@ async function createChildContract(body: ContractProps): Promise<void> {
 }
 
 
-const Contract: React.FC<{ contract: ContractProps }> = ({ contract }) => {
+const Contract: React.FC<{ contract: ContractProps, myEmail: string }> = ({ contract, myEmail }) => {
+  
   const authorName = contract.author ? contract.author.name : "Unknown author";
   // const cleanHTML = DOMPurify.sanitize(post.content, {
   //   USE_PROFILES: { html: true },
@@ -70,9 +77,6 @@ const Contract: React.FC<{ contract: ContractProps }> = ({ contract }) => {
     <div onClick={() => Router.push("/c/[id]", `/c/${contract.id}`)}>
       <h2>{contract.title}</h2>
       <small>By {authorName}</small>
-      {/* <ReactMarkdown children={post.content} /> */}
-      {/* <div dangerouslySetInnerHTML={{ __html: cleanHTML }} /> */}
-      {/* <div dangerouslySetInnerHTML={{ __html: contract.renderedContent }} /> */}
       <div>
           {contract.summary}
       </div>
@@ -93,6 +97,21 @@ const Contract: React.FC<{ contract: ContractProps }> = ({ contract }) => {
       
         )
       }
+      {
+        !contract.isTemplate && (!(contract.firstPartyEmail==myEmail)) && contract.firstPartySignDate == null &&  (
+    
+          <button onClick={() => Router.push(`mailto://${contract.firstPartyEmail}?subject=Please Review Contract&body=https://localhost:3000/c/${contract.id}`)} className="btn btn-secondary btn-space">Mailto UserFirstxxx</button>
+      
+        )
+      }
+      {
+        (!contract.isTemplate) && (!(contract.secondPartyEmail==myEmail)) && contract.secondPartySignDate == null &&  (
+    
+          <button onClick={() => Router.push("/c/[id]", `/c/${contract.id}`)} className="btn btn-secondary btn-space">Mailto Userxxxf{contract.secondPartyEmail}</button>
+        )
+      }
+                
+
       <style jsx>{`
         div {
           color: inherit;

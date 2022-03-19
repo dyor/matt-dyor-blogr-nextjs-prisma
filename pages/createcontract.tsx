@@ -22,8 +22,8 @@ function Add() {
         },
         isPublished: false,
         isPublic: false,
-        firstPartySignDate: undefined,
-        secondPartySignDate: undefined,
+        firstPartySignDate: null,
+        secondPartySignDate: null,
         firstParty: {
             name: '',
             email: ''
@@ -31,7 +31,12 @@ function Add() {
         secondParty: {
             name: '',
             email: ''
-        }
+        },
+        startDate: new Date(),
+        duration: 0,
+        endDate: new Date(),
+        amount: 0,
+        showAmount: false
     };
     return (
         <Layout>

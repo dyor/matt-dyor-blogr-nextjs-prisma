@@ -106,7 +106,7 @@ const Header: React.FC = () => {
 
           .right a {
             border: 1px solid var(--geist-foreground);
-            padding: 0.5rem 1rem;
+            // padding: 0.5rem 1rem;
             border-radius: 3px;
           }
         `}</style>
@@ -156,13 +156,13 @@ const Header: React.FC = () => {
           {session.user.name} ({session.user.email})
         </p>
         <Link href="/createcontract">
-          <button className="btn btn-success btn-space">
-            <a>New Template</a>
+          <button className="btn btn-secondary btn-space">
+            <a>+ New Template</a>
           </button>
         </Link>
         <Link href="/">
-          <button className="btn btn-success btn-space">
-            <a>New Contract</a>
+          <button className="btn btn-secondary btn-space">
+            <a>+ New Contract</a>
           </button>
         </Link>
         <button className="btn btn-secondary btn-space" onClick={() => signOut()}>
@@ -195,7 +195,7 @@ const Header: React.FC = () => {
 
           .right a {
             border: 1px solid var(--geist-foreground);
-            padding: 0.5rem 1rem;
+            // padding: 0.5rem 1rem;
             border-radius: 3px;
           }
 

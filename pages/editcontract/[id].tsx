@@ -44,7 +44,7 @@ const Edit: React.FC<ContractProps> = (props) => {
       isPublished: props.isPublished,
       isPublic: props.isPublic,
       firstPartySignDate: props.firstPartySignDate,
-      secondPartySignDate:  props.secondPartySignDate,
+      secondPartySignDate: props.secondPartySignDate,
       firstParty: {
         name: '',
         email: ''
@@ -52,7 +52,12 @@ const Edit: React.FC<ContractProps> = (props) => {
       secondParty: {
         name: '',
         email: ''
-      }
+      },
+      startDate: props.startDate,
+      duration: 0,
+      endDate: props.endDate,
+      amount: props.amount,
+      showAmount: props.showAmount
     };
 
     return ( 

@@ -8,7 +8,7 @@ function Add() {
     let body: ContractProps  = {
         id: 0,
         title: "",
-        content: "",
+        content: "<h1>{Title}</h1><h2>{Summary}</h2><p>This Agreement is made between {FirstPartyName} with an email address of {FirstPartyEmail} and {SecondPartyName} with an email address of {SecondPartyEMail}. </p><h2>Term</h2><p>This agreement has an effective date of {StartDate} and will end {EndDate}. </p><p><br></p>",
         summary: "",
         firstPartyName: "",
         firstPartyEmail: "",

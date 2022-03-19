@@ -100,14 +100,14 @@ const Contract: React.FC<{ contract: ContractProps, myEmail: string }> = ({ cont
       {
         !contract.isTemplate && (!(contract.firstPartyEmail==myEmail)) && contract.firstPartySignDate == null &&  (
     
-          <button onClick={() => Router.push(`mailto://${contract.firstPartyEmail}?subject=Please Review Contract&body=https://localhost:3000/c/${contract.id}`)} className="btn btn-secondary btn-space">Mailto UserFirstxxx</button>
+          <button onClick={() => {Router.push(`mailto://${contract.firstPartyEmail}?subject=Please Review Contract&body=https://localhost:3000/sign/${contract.id}`); Router.push(`/sign/${contract.id}`)}} className="btn btn-secondary btn-space">Mailto UserFirstxxx</button>
       
         )
       }
       {
         (!contract.isTemplate) && (!(contract.secondPartyEmail==myEmail)) && contract.secondPartySignDate == null &&  (
     
-          <button onClick={() => Router.push("/c/[id]", `/c/${contract.id}`)} className="btn btn-secondary btn-space">Mailto Userxxxf{contract.secondPartyEmail}</button>
+          <button onClick={() => {Router.push(`mailto://${contract.secondPartyEmail}?subject=Please Review Contract&body=https://localhost:3000/sign/${contract.id}`); Router.push(`/sign/${contract.id}`)}}  className="btn btn-secondary btn-space">Mailto Userxxxf{contract.secondPartyEmail}</button>
         )
       }
                 

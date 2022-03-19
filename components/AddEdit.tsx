@@ -80,7 +80,6 @@ const AddEdit: React.FC<Props> = (props) => {
     const contract = props.contract;
     const isAddMode = !(contract.id > 0);
 
-    console.log(contract);
     const router = useRouter();
     // form validation rules 
     const validationSchema = Yup.object().shape({
@@ -114,6 +113,7 @@ const AddEdit: React.FC<Props> = (props) => {
 
     const [] = useState(); 
     let saveButtonLabel = "Save Contract";
+
     if (isTemplate) {
         saveButtonLabel = "Save Template";
     }
@@ -323,6 +323,7 @@ const AddEdit: React.FC<Props> = (props) => {
                         )
                     }
                     <h2>Contract Preview</h2>
+
                     {parse(content
                         .split("{FirstPartyName}").join(firstPartyName ? firstPartyName : "<strong>{FirstPartyName}</strong>")
                         .split("{FirstPartyEmail}").join(firstPartyEmail ? firstPartyEmail : "<strong>{FirstPartyEmail}</strong>")
@@ -330,12 +331,17 @@ const AddEdit: React.FC<Props> = (props) => {
                         .split("{SecondPartyEmail}").join(secondPartyEmail ? secondPartyEmail : "<strong>{SecondPartyEmail}</strong>")
                         .split("{Summary}").join(summary ? summary : "<strong>{Summary}</strong>")
                         .split("{Title}").join(title ? title : "<strong>{Title}</strong>")
-                        .split("{StartDate}").join(startDate ? parseISO(startDate.toString()).toLocaleDateString() : "<strong>{StartDate}</strong>")
                         .split("{Amount}").join(amount ? amount?.toString() : "<strong>{Amount}</strong>")
-                        .split("{EndDate}").join(endDate ? parseISO(endDate.toString()).toLocaleDateString() : "<strong>{EndDate}</strong>")
-                        
+                        .split("{StartDate}").join(startDate ? startDate.toLocaleDateString() : "<strong>{StartDate}</strong>")
+                        .split("{EndDate}").join(endDate ? endDate.toLocaleDateString() : "<strong>{EndDate}</strong>")
                         )
+                        // works for edit
+                        //works for create
+                        //.split("{StartDate}").join(startDate ? startDate.toLocaleDateString() : "<strong>{StartDate}</strong>")
+                        
+                        
                     }
+                    
                 </div>
             </div>
             </form>

@@ -7,6 +7,7 @@ import { GetServerSideProps } from 'next';
 import prisma from '../../lib/prisma';
 import { ContractProps } from '../../components/Contract';
 import Router from 'next/router';
+import parseISO from 'date-fns/parseISO'
 
 
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -33,7 +34,7 @@ const Sign: React.FC<ContractProps> = (props) => {
   const [message, setMessage] = useState(''); // This will be used to show a message if the submission is successful
   const [submitted, setSubmitted] = useState(false);
   const re = new RegExp(props.firstPartyName);
-  let data = {}; 
+  let data = {};
 
   const formik = useFormik({
     initialValues: {
@@ -44,23 +45,23 @@ const Sign: React.FC<ContractProps> = (props) => {
     onSubmit: async () => {
       //if session.user.email == props.firstPartyEmail then update firstPartySignDate to today
       //else if 
-      
+
       if (session.user.email == props.firstPartyEmail) {
         data = {
-          firstPartySignDate: new Date(), 
-        } 
+          firstPartySignDate: new Date(),
+        }
       }
       else if (session.user.email == props.secondPartyEmail) {
         data = {
-          secondPartySignDate: new Date(), 
-        } 
+          secondPartySignDate: new Date(),
+        }
       }
-        const response = await fetch(`/api/contract/${props.id}`, {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(data),
+      const response = await fetch(`/api/contract/${props.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
       }).then((response2) => Router.push(`/c/${props.id}`));
-    }, 
+    },
     //   setMessage('Form submitted');
     //   setSubmitted(true);
     // },
@@ -86,62 +87,107 @@ const Sign: React.FC<ContractProps> = (props) => {
           <div className="col-sm-6">
             <h2>Key Terms</h2>
             <table className="table table-striped table-hover table-bordered">
-            <tr>
-                <th>
+              <tbody>
+                <tr>
+                  <th>
                     Term
-                </th>
-                <td>
+                  </th>
+                  <th>
                     Value
-                </td>
-              </tr>
-              <tr>
-                <td>
+                  </th>
+                </tr>
+                <tr>
+                  <td>
                     &#123;Title&#125;
-                </td>
-                <td>
+                  </td>
+                  <td>
                     {props.title}
-                </td>
-              </tr>
-              <tr>
-                <td>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
                     &#123;Summary&#125;
-                </td>
-                <td>
+                  </td>
+                  <td>
                     {props.summary}
-                </td>
-              </tr>
-              <tr>
-                <td>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
                     &#123;FirstPartyName&#125;
-                </td>
-                <td>
+                  </td>
+                  <td>
                     {props.firstPartyName}
-                </td>
-              </tr>
-              <tr>
-                <td>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
                     &#123;FirstPartyEmail&#125;
-                </td>
-                <td>
+                  </td>
+                  <td>
                     {props.firstPartyEmail}
-                </td>
-              </tr>
-              <tr>
-                <td>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    &#123;FirstPartySignDate&#125;
+                  </td>
+                  <td>
+                    {props.firstPartySignDate}
+                  </td>
+                </tr>
+                <tr>
+                  <td>
                     &#123;SecondPartyName&#125;
-                </td>
-                <td>
+                  </td>
+                  <td>
                     {props.secondPartyName}
-                </td>
-              </tr>
-              <tr>
-                <td>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
                     &#123;SecondPartyEmail&#125;
-                </td>
-                <td>
+                  </td>
+                  <td>
                     {props.secondPartyEmail}
-                </td>
-              </tr>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    &#123;SecondPartySignDate&#125;
+                  </td>
+                  <td>
+                    {props.secondPartySignDate}
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    &#123;StartDate&#125;
+                  </td>
+                  <td>
+                    {parseISO(props.startDate).toDateString()}
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    &#123;EndDate&#125;
+                  </td>
+                  <td>
+                    {parseISO(props.endDate).toDateString()}
+                  </td>
+                </tr>
+                {
+                  props.showAmount && (
+                    <tr>
+                      <td>
+                        &#123;Amount&#125;
+                      </td>
+                      <td>
+                        {props.amount}
+                      </td>
+                    </tr>
+                  )}
+              </tbody>
             </table>
           </div>
           <div className="col-sm-6">
@@ -156,9 +202,9 @@ const Sign: React.FC<ContractProps> = (props) => {
         </div>
         <div>
           <form onSubmit={formik.handleSubmit} className="form-inline">
-          {formik.errors.name && (
-                <div className="text-danger">{formik.errors.name}</div>
-              )}
+            {formik.errors.name && (
+              <div className="text-danger">{formik.errors.name}</div>
+            )}
             <div className="form-group">
               <input
                 type="text"
@@ -170,19 +216,19 @@ const Sign: React.FC<ContractProps> = (props) => {
                 onBlur={formik.handleBlur}
               />
               <button type="submit" className="btn btn-primary btn-space">
-              Sign
-            </button> 
-            
-            {/* <input disabled={!content || !title} type="submit" value={saveButtonLabel} className="btn btn-primary btn-space" /> */}
-                           
-            
-            <button className="back btn-space btn btn-secondary" onClick={() => Router.push(`/c/${props.id}`)}>Cancel</button>   
+                Sign
+              </button>
 
-</div>
-<div><em> Enter your name ({props.firstPartyName}) + click sign</em></div>
+              {/* <input disabled={!content || !title} type="submit" value={saveButtonLabel} className="btn btn-primary btn-space" /> */}
 
-<div>{props.firstPartyName} {props.firstPartyEmail} signed {props.firstPartySignDate? props.firstPartySignDate : "not yet" }</div>
-<div>{props.secondPartyName} {props.secondPartyEmail} signed {props.secondPartySignDate? props.secondPartySignDate : "not yet" }</div>
+
+              <button className="back btn-space btn btn-secondary" onClick={() => Router.push(`/c/${props.id}`)}>Cancel</button>
+
+            </div>
+            <div><em> Enter your name ({props.firstPartyName}) + click sign</em></div>
+
+            <div>{props.firstPartyName} {props.firstPartyEmail} signed {props.firstPartySignDate ? props.firstPartySignDate : "not yet"}</div>
+            <div>{props.secondPartyName} {props.secondPartyEmail} signed {props.secondPartySignDate ? props.secondPartySignDate : "not yet"}</div>
 
 
           </form>
@@ -206,9 +252,9 @@ const Sign: React.FC<ContractProps> = (props) => {
               border: 0.125rem solid rgba(0, 0, 0, 0.2);
             }
             `}
-            </style>
-          </div>
+          </style>
         </div>
+      </div>
     </>
   );
 };

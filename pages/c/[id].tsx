@@ -9,6 +9,7 @@ import { ContractProps } from '../../components/Contract';
 import { useSession } from 'next-auth/react';
 import prisma from '../../lib/prisma';
 import DOMPurify from "dompurify";
+import parseISO from 'date-fns/parseISO'
 
 export const getServerSideProps: GetServerSideProps = async ({ params }) => {
   const contract = await prisma.contract.findUnique({
@@ -97,13 +98,14 @@ const Contract: React.FC<ContractProps> = (props) => {
           <div className="col-sm-6">
             <h2>Key Terms</h2>
             <table className="table table-striped table-hover table-bordered">
+            <tbody>
             <tr>
                 <th>
                     Term
                 </th>
-                <td>
+                <th>
                     Value
-                </td>
+                </th>
               </tr>
               <tr>
                 <td>
@@ -171,12 +173,32 @@ const Contract: React.FC<ContractProps> = (props) => {
               </tr>
               <tr>
                 <td>
+                    &#123;StartDate&#125;
+                </td>
+                <td>
+                    {parseISO(props.startDate).toDateString()}
+                </td>
+              </tr>
+              <tr>
+                <td>
+                    &#123;EndDate&#125;
+                </td>
+                <td>
+                  {parseISO(props.endDate).toDateString()}
+                </td>
+              </tr>
+              {
+                props.showAmount && (
+              <tr>
+                <td>
                     &#123;Amount&#125;
                 </td>
                 <td>
                     {props.amount}
                 </td>
               </tr>
+                )}
+              </tbody>
             </table>
           </div>
           <div className="col-sm-6">
@@ -187,12 +209,12 @@ const Contract: React.FC<ContractProps> = (props) => {
       <br/>
       <div className="jumbotron text-center">
         {
-          userHasValidSession && contractBelongsToUser && (
+          userHasValidSession && contractBelongsToUser && props.firstPartySignDate==null && props.firstPartySignDate==null && (
           <button onClick={() => editContract(props.id)} className="btn btn-primary btn-space">Edit</button>
           )
         }
         {
-          userHasValidSession && contractBelongsToUser && (
+          userHasValidSession && contractBelongsToUser && props.firstPartySignDate==null && props.firstPartySignDate==null && (
             <button onClick={() => deleteContract(props.id)} className="btn btn-danger btn-space">Delete</button>
           )
         }
@@ -213,15 +235,17 @@ const Contract: React.FC<ContractProps> = (props) => {
         }
          {
           !props.isTemplate && !(props.firstPartyEmail == session.user.email) && props.firstPartySignDate==null && (
-            <button onClick={() => signContract(props.id)} className="btn btn-success btn-space">Send for sigxxx</button> 
+            <button onClick={() => {Router.push(`mailto://${props.firstPartyEmail}?subject=Please Review Contract&body=https://localhost:3000/sign/${props.id}`); Router.push(`/sign/${props.id}`)}} className="btn btn-success btn-space">Send to {props.firstPartyEmail}</button> 
           )
         }
         {
           !props.isTemplate && (!(props.secondPartyEmail == session.user.email)) && props.secondPartySignDate==null && (
-            <button onClick={() => signContract(props.id)} className="btn btn-success btn-space">Send for Sigxxx</button> 
+            <button onClick={() => {Router.push(`mailto://${props.secondPartyEmail}?subject=Please Review Contract&body=https://localhost:3000/sign/${props.id}`); Router.push(`/sign/${props.id}`)}}  className="btn btn-success btn-space">Send to {props.secondPartyEmail}</button> 
           )
         }
         </div>
+        <br/>
+        <br/>
       </div>
       <style jsx>{`
         .btn-space {

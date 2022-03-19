@@ -53,9 +53,9 @@ const Edit: React.FC<ContractProps> = (props) => {
         name: '',
         email: ''
       },
-      startDate: props.startDate,
+      startDate: new Date(props.startDate),
       duration: 0,
-      endDate: props.endDate,
+      endDate: new Date(props.endDate),
       amount: props.amount,
       showAmount: props.showAmount
     };

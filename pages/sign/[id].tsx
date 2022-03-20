@@ -165,7 +165,7 @@ const Sign: React.FC<ContractProps> = (props) => {
                     &#123;StartDate&#125;
                   </td>
                   <td>
-                    {(props.startDate).toDateString()}
+                    {new Date(props.startDate).toDateString()}
                   </td>
                 </tr>
                 <tr>
@@ -173,7 +173,7 @@ const Sign: React.FC<ContractProps> = (props) => {
                     &#123;EndDate&#125;
                   </td>
                   <td>
-                    {(props.endDate).toDateString()}
+                    {new Date(props.endDate).toDateString()}
                   </td>
                 </tr>
                 {

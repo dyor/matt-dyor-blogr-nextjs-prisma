@@ -115,7 +115,7 @@ const AddEdit: React.FC<Props> = (props) => {
     const [duration, setDuration] = useState(contract.duration); 
 
     let myDuration = 0; 
-    let myMonthlyPayment = 0; 
+    let myMonthlyPayment = ""; 
 
     const [] = useState(); 
     let saveButtonLabel = "Save Contract";
@@ -123,6 +123,9 @@ const AddEdit: React.FC<Props> = (props) => {
     if (isTemplate) {
         saveButtonLabel = "Save Template";
     }
+
+
+
 
     const onSubmit = (data, e) => {
         try {
@@ -136,7 +139,11 @@ const AddEdit: React.FC<Props> = (props) => {
                 .split("{InterestRate}").join(interestRate.toString())
                 .split("{StartDate}").join(new Date(startDate).toLocaleDateString())
                 .split("{EndDate}").join(new Date(endDate).toLocaleDateString())
-                .split("{Title}").join(title).toString();
+                .split("{Title}").join(title).toString()
+                .split("{Duration}").join(monthDiff(startDate,endDate).toString())
+                .split("{MonthlyPayment}").join(monthlyPayment(amount, monthDiff(startDate,endDate), interestRate/100));
+                
+                
                
             const body = { title, content, summary, firstPartyName, firstPartyEmail, secondPartyName, secondPartyEmail, renderedContent, isTemplate, startDate, endDate, amount, showAmount, interestRate, showInterestRate, duration };
 
@@ -444,6 +451,7 @@ const AddEdit: React.FC<Props> = (props) => {
 }
 
 export default AddEdit;
+
 function monthDiff(d1, d2) {
     var months;
     months = (d2.getFullYear() - d1.getFullYear()) * 12;
@@ -459,8 +467,5 @@ function monthDiff(d1, d2) {
 
 
 function monthlyPayment(amount :number, duration :number, interestRate :number) {
-//   return amount * interestRate * (Math.pow(1 + interestRate, duration)) / (Math.pow(1 + interestRate, duration) - 1);
-// return amount * (Math.pow((1+interestRate/duration), duration) - 1)
-return (amount * interestRate/12 * Math.pow(1+interestRate/12, duration )/(Math.pow(1+interestRate/12, duration ) - 1)).toFixed(2)
-
+    return (amount * interestRate/12 * Math.pow(1+interestRate/12, duration )/(Math.pow(1+interestRate/12, duration ) - 1)).toFixed(2)
 }

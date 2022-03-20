@@ -345,7 +345,7 @@ const AddEdit: React.FC<Props> = (props) => {
                         <div>
                         {
                             myDuration = monthDiff(startDate,endDate)
-                        }
+                        } Months
                         </div>
                         {
                             amount > 0 && interestRate > 0 && startDate != null && endDate != null && (
@@ -358,6 +358,7 @@ const AddEdit: React.FC<Props> = (props) => {
                         </>
                         )}
                         <div>
+                            <br/>
                             <button disabled={!content || !title} type="submit"  className="btn btn-primary btn-space" onSubmit={handleSubmit(onSubmit, onError)}>{saveButtonLabel}</button>
                             <button className="back btn-space btn btn-secondary" onClick={() => Router.push('/')}>Cancel</button>   
                             

@@ -8,7 +8,7 @@ function Add() {
     let body: ContractProps  = {
         id: 0,
         title: "My New Contract",
-        content: "<h1>{Title}</h1><h2>{Summary}</h2><p>This Agreement is made between {FirstPartyName} with an email address of {FirstPartyEmail} and {SecondPartyName} with an email address of {SecondPartyEMail}. </p><h2>Term</h2><p>This agreement has an effective date of {StartDate} and will end {EndDate}. </p><p><br></p>",
+        content: "<h1>{Title}</h1><h2>{Summary}</h2><p>This Agreement is made between {FirstPartyName} with an email address of {FirstPartyEmail} and {SecondPartyName} with an email address of {SecondPartyEmail}. </p><h2>Term</h2><p>This agreement has an effective date of {StartDate} and will end {EndDate} for a total of {Duration} months. </p><p><br></p>",
         summary: "",
         firstPartyName: "",
         firstPartyEmail: "",
@@ -34,7 +34,7 @@ function Add() {
         },
         startDate: new Date(),
         duration: 0,
-        endDate: new Date(),
+        endDate: new Date(new Date().setFullYear(new Date().getFullYear() + 1)),
         amount: 0,
         showAmount: false, 
         interestRate: 0, 

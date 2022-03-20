@@ -12,6 +12,19 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
     res.statusCode = 403;
     return { props: { contracts: [] } };
   }
+  if (session.user.email.toLocaleLowerCase() != session.user.email){
+    console.log('need to lowercase'); 
+
+    
+    const contract = await prisma.user.update({
+      where: { email:  session.user.email},
+       data: 
+          {
+            email: session.user.email.toLocaleLowerCase() 
+          },
+      },
+    );
+  }
 
   //query for contracts assigned to user
   //   const contracts = await prisma.contract.findMany({
@@ -62,7 +75,8 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
   });//.then(() => createChildContract(contracts, session?.user?.email));
 
   return {
-    props: { contracts },
+    props: JSON.parse(JSON.stringify({ contracts })),
+   
   };
 };
 

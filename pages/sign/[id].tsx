@@ -187,6 +187,17 @@ const Sign: React.FC<ContractProps> = (props) => {
                       </td>
                     </tr>
                   )}
+                  {
+                  props.showInterestRate && (
+                    <tr>
+                      <td>
+                        &#123;InterestRate&#125;
+                      </td>
+                      <td>
+                        {props.interestRate}
+                      </td>
+                    </tr>
+                  )}
               </tbody>
             </table>
           </div>

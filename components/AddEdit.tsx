@@ -108,8 +108,14 @@ const AddEdit: React.FC<Props> = (props) => {
     const [endDate, setEndDate] = useState(contract.endDate); 
     const [amount, setAmount] = useState(contract.amount);
     const [showAmount, setShowAmount] = useState(contract.showAmount); 
+    const [interestRate, setInterestRate] = useState(contract.interestRate); 
+    const [showInterestRate, setShowInterestRate] = useState(contract.showInterestRate); 
     const [firstPartySignDate, setFirstPartySignDate] = useState(contract.firstPartySignDate); 
-    const [secondPartySignDate, setSecibdPartySignDate] = useState(contract.secondPartySignDate); 
+    const [secondPartySignDate, setSecondPartySignDate] = useState(contract.secondPartySignDate); 
+    const [duration, setDuration] = useState(contract.duration); 
+
+    let myDuration = 0; 
+    let myMonthlyPayment = 0; 
 
     const [] = useState(); 
     let saveButtonLabel = "Save Contract";
@@ -127,11 +133,12 @@ const AddEdit: React.FC<Props> = (props) => {
                 .split("{SecondPartyEmail}").join(secondPartyEmail)
                 .split("{Summary}").join(summary)
                 .split("{Amount}").join(amount.toString())
+                .split("{InterestRate}").join(interestRate.toString())
                 .split("{StartDate}").join(new Date(startDate).toLocaleDateString())
                 .split("{EndDate}").join(new Date(endDate).toLocaleDateString())
                 .split("{Title}").join(title).toString();
                
-            const body = { title, content, summary, firstPartyName, firstPartyEmail, secondPartyName, secondPartyEmail, renderedContent, isTemplate, startDate, endDate, amount, showAmount };
+            const body = { title, content, summary, firstPartyName, firstPartyEmail, secondPartyName, secondPartyEmail, renderedContent, isTemplate, startDate, endDate, amount, showAmount, interestRate, showInterestRate, duration };
 
             return isAddMode
                 ? createContract(body)
@@ -241,7 +248,7 @@ const AddEdit: React.FC<Props> = (props) => {
                         />
                         <label>&#123;FirstPartyEmail&#125;</label>
                         <input
-                            onChange={(e) => setFirstPartyEmail(e.target.value)}
+                            onChange={(e) => setFirstPartyEmail(e.target.value.toLowerCase())}
                             placeholder="First Party Email"
                             type="text"
                             value={firstPartyEmail}
@@ -255,7 +262,7 @@ const AddEdit: React.FC<Props> = (props) => {
                         />
                         <label>&#123;SecondPartyEmail&#125;</label>
                         <input
-                            onChange={(e) => setSecondPartyEmail(e.target.value)}
+                            onChange={(e) => setSecondPartyEmail(e.target.value.toLowerCase())}
                             placeholder="Second Party Email"
                             type="text"
                             value={secondPartyEmail}
@@ -286,18 +293,40 @@ const AddEdit: React.FC<Props> = (props) => {
                         />
                         </div>
                         )}
-                        <div>
-                            <button disabled={!content || !title} type="submit"  className="btn btn-primary btn-space" onSubmit={handleSubmit(onSubmit, onError)}>{saveButtonLabel}</button>
-                            <button className="back btn-space btn btn-secondary" onClick={() => Router.push('/')}>Cancel</button>   
-                            
+                        {
+                                isTemplate == true && (
+                                    <div>
+                                        Show Interest Rate field? <input type="checkbox" checked={showInterestRate} onChange={() => setShowInterestRate(!showInterestRate)} />
+                                    </div>
+                                )
+                        }
+                        {
+                                showInterestRate == true && (
+                                    <div>
+                                
+                        <label>&#123;InterestRate&#125; % (e.g., 8 for 8%)</label>
+                        <input
+                            onChange={(e) => setInterestRate(parseFloat(e.target.value))}
+                            placeholder="Interest Rate"
+                            type="number"
+                            value={interestRate}
+                        />
                         </div>
-                        <hr />
+                        )}
                         <h2>Calculated Fields</h2>
-                        <div>&#123;FirstPartySignDate&#125;</div>
+                        {
+                            firstPartySignDate != null && (
+                                <><div>&#123;FirstPartySignDate&#125;</div>
                         <div>{firstPartySignDate}</div>
+                        </>
+                            )}
                         <div></div>
-                        <div>&#123;SecondPartySignDate&#125;</div>
+                        {
+                            secondPartySignDate != null && (
+                                <><div>&#123;SecondPartySignDate&#125;</div>
                         <div>{secondPartySignDate}</div>
+                        </>
+                            )}
                         {
                                 isTemplate == false && (
                                     <div>
@@ -305,6 +334,27 @@ const AddEdit: React.FC<Props> = (props) => {
                                         </div>
                                 )
                         }
+                        <div>&#123;Duration&#125;</div>
+                        <div>
+                        {
+                            myDuration = monthDiff(startDate,endDate)
+                        }
+                        </div>
+                        {
+                            amount > 0 && interestRate > 0 && startDate != null && endDate != null && (
+                                <><div>&#123;MontlyPayment&#125;</div>
+                                <div>
+                        {
+                            myMonthlyPayment = monthlyPayment(amount, monthDiff(startDate,endDate), interestRate/100)
+                        }
+                        </div>
+                        </>
+                        )}
+                        <div>
+                            <button disabled={!content || !title} type="submit"  className="btn btn-primary btn-space" onSubmit={handleSubmit(onSubmit, onError)}>{saveButtonLabel}</button>
+                            <button className="back btn-space btn btn-secondary" onClick={() => Router.push('/')}>Cancel</button>   
+                            
+                        </div>
                         
                 </div>
                 <div className="col-sm" >
@@ -317,13 +367,12 @@ const AddEdit: React.FC<Props> = (props) => {
                                 <div className="white"> 
                                     <QuillNoSSRWrapper modules={modules} placeholder='compose here' value={content} onChange={setContent} formats={formats} theme="snow" />
                                 </div>
-                                <br /><i>&#123;ContractTerms&#125; will be replaced.</i><br /><hr /><br />
+                                <br /><i>&#123;ContractTerms&#125; above will be replaced by entered values as shown below.</i><br /><hr />
                                 </div>
                             </>
                         )
                     }
-                    <h2>Contract Preview</h2>
-
+                    {/* <h2>Contract Preview</h2> */}
                     {parse(content
                         .split("{FirstPartyName}").join(firstPartyName ? firstPartyName : "<strong>{FirstPartyName}</strong>")
                         .split("{FirstPartyEmail}").join(firstPartyEmail ? firstPartyEmail : "<strong>{FirstPartyEmail}</strong>")
@@ -332,15 +381,15 @@ const AddEdit: React.FC<Props> = (props) => {
                         .split("{Summary}").join(summary ? summary : "<strong>{Summary}</strong>")
                         .split("{Title}").join(title ? title : "<strong>{Title}</strong>")
                         .split("{Amount}").join(amount ? amount?.toString() : "<strong>{Amount}</strong>")
+                        .split("{InterestRate}").join(interestRate ? interestRate?.toString() : "<strong>{InterestRate}</strong>")
                         .split("{StartDate}").join(startDate ? startDate.toLocaleDateString() : "<strong>{StartDate}</strong>")
                         .split("{EndDate}").join(endDate ? endDate.toLocaleDateString() : "<strong>{EndDate}</strong>")
+                        .split("{Duration}").join(myDuration ? myDuration.toString() : "<strong>{Duration}</strong>")
+                        .split("{MonthlyPayment}").join(myMonthlyPayment ? myMonthlyPayment.toString() : "<strong>{MonthlyPayment}</strong>")
+                        // xxx need to add these terms to the above so that they are persisted. 
                         )
-                        // works for edit
-                        //works for create
-                        //.split("{StartDate}").join(startDate ? startDate.toLocaleDateString() : "<strong>{StartDate}</strong>")
-                        
-                        
                     }
+                    
                     
                 </div>
             </div>
@@ -395,12 +444,23 @@ const AddEdit: React.FC<Props> = (props) => {
 }
 
 export default AddEdit;
+function monthDiff(d1, d2) {
+    var months;
+    months = (d2.getFullYear() - d1.getFullYear()) * 12;
+    months -= d1.getMonth();
+    months += d2.getMonth();
+    return months <= 0 ? 0 : months;
+}
 
-function addMonths(date :Date, months :number) {
-    var d = date.getDate();
-    date.setMonth(date.getMonth() + +months);
-    if (date.getDate() != d) {
-      date.setDate(0);
-    }
-    return date.toLocaleDateString();
+
+
+
+//monthly mortgage payment
+
+
+function monthlyPayment(amount, duration, interestRate) {
+//   return amount * interestRate * (Math.pow(1 + interestRate, duration)) / (Math.pow(1 + interestRate, duration) - 1);
+// return amount * (Math.pow((1+interestRate/duration), duration) - 1)
+return (amount * interestRate/12 * Math.pow(1+interestRate/12, duration )/(Math.pow(1+interestRate/12, duration ) - 1)).toFixed(2)
+
 }

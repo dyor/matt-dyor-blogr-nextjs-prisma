@@ -51,8 +51,9 @@ const ContractList: React.FC<Props> = (props) => {
   if (!session) {
     return (
       <Layout>
-        <h1>My Contracts</h1>
-        <div>You need to be authenticated to view this page.</div>
+        <div className="page jumbotron text-center">
+          <h1>You need to be authenticated to view this page</h1>
+          Sign up or sign in using the Log in button in the top right.</div>
       </Layout>
     );
   }

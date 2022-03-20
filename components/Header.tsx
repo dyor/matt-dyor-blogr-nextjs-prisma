@@ -13,11 +13,6 @@ const Header: React.FC = () => {
 
   let left = (
     <div className="left">
-      <Link href="/">
-        <a className="bold" data-active={isActive('/')}>
-          Templates
-        </a>
-      </Link>
       <style jsx>{`
         .bold {
           font-weight: bold;
@@ -47,7 +42,7 @@ const Header: React.FC = () => {
       <div className="left">
         <Link href="/">
           <a data-active={isActive('/')}>
-            Templates
+            Templates d
           </a>
         </Link>
         <style jsx>{`

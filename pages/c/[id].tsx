@@ -176,7 +176,7 @@ const Contract: React.FC<ContractProps> = (props) => {
                     &#123;StartDate&#125;
                 </td>
                 <td>
-                    {parseISO(props.startDate).toDateString()}
+                    {(props.startDate).toDateString()}
                 </td>
               </tr>
               <tr>
@@ -184,7 +184,7 @@ const Contract: React.FC<ContractProps> = (props) => {
                     &#123;EndDate&#125;
                 </td>
                 <td>
-                  {parseISO(props.endDate).toDateString()}
+                  {(props.endDate).toDateString()}
                 </td>
               </tr>
               {

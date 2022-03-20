@@ -458,7 +458,7 @@ function monthDiff(d1, d2) {
 //monthly mortgage payment
 
 
-function monthlyPayment(amount, duration, interestRate) {
+function monthlyPayment(amount :number, duration :number, interestRate :number) {
 //   return amount * interestRate * (Math.pow(1 + interestRate, duration)) / (Math.pow(1 + interestRate, duration) - 1);
 // return amount * (Math.pow((1+interestRate/duration), duration) - 1)
 return (amount * interestRate/12 * Math.pow(1+interestRate/12, duration )/(Math.pow(1+interestRate/12, duration ) - 1)).toFixed(2)

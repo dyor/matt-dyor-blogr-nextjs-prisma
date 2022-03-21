@@ -130,11 +130,11 @@ const AddEdit: React.FC<Props> = (props) => {
     const onSubmit = (data, e) => {
         try {
             const renderedContent = content
+                .split("{Summary}").join(summary)
                 .split("{FirstPartyName}").join(firstPartyName)
                 .split("{FirstPartyEmail}").join(firstPartyEmail)
                 .split("{SecondPartyName}").join(secondPartyName)
                 .split("{SecondPartyEmail}").join(secondPartyEmail)
-                .split("{Summary}").join(summary)
                 .split("{Amount}").join(amount.toString())
                 .split("{InterestRate}").join(interestRate.toString())
                 .split("{StartDate}").join(new Date(startDate).toLocaleDateString())
@@ -382,11 +382,11 @@ const AddEdit: React.FC<Props> = (props) => {
                     }
                     {/* <h2>Contract Preview</h2> */}
                     {parse(content
+                        .split("{Summary}").join(summary ? summary : "<strong>{Summary}</strong>")
                         .split("{FirstPartyName}").join(firstPartyName ? firstPartyName : "<strong>{FirstPartyName}</strong>")
                         .split("{FirstPartyEmail}").join(firstPartyEmail ? firstPartyEmail : "<strong>{FirstPartyEmail}</strong>")
                         .split("{SecondPartyName}").join(secondPartyName ? secondPartyName : "<strong>{SecondPartyName}</strong>")
                         .split("{SecondPartyEmail}").join(secondPartyEmail ? secondPartyEmail : "<strong>{SecondPartyEmail}</strong>")
-                        .split("{Summary}").join(summary ? summary : "<strong>{Summary}</strong>")
                         .split("{Title}").join(title ? title : "<strong>{Title}</strong>")
                         .split("{Amount}").join(amount ? amount?.toString() : "<strong>{Amount}</strong>")
                         .split("{InterestRate}").join(interestRate ? interestRate?.toString() : "<strong>{InterestRate}</strong>")
@@ -394,6 +394,7 @@ const AddEdit: React.FC<Props> = (props) => {
                         .split("{EndDate}").join(endDate ? endDate.toLocaleDateString() : "<strong>{EndDate}</strong>")
                         .split("{Duration}").join(myDuration ? myDuration.toString() : "<strong>{Duration}</strong>")
                         .split("{MonthlyPayment}").join(myMonthlyPayment ? myMonthlyPayment.toString() : "<strong>{MonthlyPayment}</strong>")
+                        
                         // xxx need to add these terms to the above so that they are persisted. 
                         )
                     }

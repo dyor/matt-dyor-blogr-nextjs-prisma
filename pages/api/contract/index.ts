@@ -9,7 +9,7 @@ export default async function handle(req, res) {
   const session = await getSession({ req });
   
   let sdt = new Date(startDate);
-  let edt = new Date(startDate);
+  let edt = new Date(endDate);
   const result = await prisma.contract.create({
     data: {
       title: title,

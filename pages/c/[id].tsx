@@ -54,17 +54,23 @@ async function signContract(id: number): Promise<void> {
 //isTemplate should be set to false
 
 async function createChildContract(body: ContractProps): Promise<void> {
-  //populate the parent id
   var contract = {} ;
   var key ;
   for ( key in body )
   {
-    // copy each property into the clone
-    contract[ key ] = body[ key ] ;
+    if (key=="startDate"){
+      contract[ key ] = new Date();
+    }
+    else if (key=="endDate"){
+      contract[ key ] = new Date(new Date().setFullYear(new Date().getFullYear() + 1)); 
+    }
+    else{
+      contract[ key ] = body[ key ] ;
+    }
   }
   contract["isTemplate"] = false;
   contract["isPublished"] = false; 
-  //contract["template"] = body.id; 
+  console.log(contract["startDate"])
   const response = await fetch('/api/contract', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },

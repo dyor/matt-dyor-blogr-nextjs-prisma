@@ -51,11 +51,22 @@ async function createChildContract(body: ContractProps): Promise<void> {
   var key ;
   for ( key in body )
   {
-    // copy each property into the clone
-    contract[ key ] = body[ key ] ;
+    if (key=="startDate"){
+      contract[ key ] = new Date();
+    }
+    else if (key=="endDate"){
+      contract[ key ] = new Date(new Date().setFullYear(new Date().getFullYear() + 1)); 
+    }
+    else{
+      contract[ key ] = body[ key ] ;
+    }
   }
   contract["isTemplate"] = false;
   contract["isPublished"] = false; 
+  if (new Date(contract["startDate"]) == new Date("1/1/2001") )
+  {
+    console.log('equals'); 
+  }
   //contract["template"] = body.id; 
   const response = await fetch('/api/contract', {
     method: 'POST',

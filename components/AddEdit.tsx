@@ -274,11 +274,14 @@ const AddEdit: React.FC<Props> = (props) => {
                             type="text"
                             value={secondPartyEmail}
                         />
-                        
-                        <label>&#123;StartDate&#125;</label>
+                            <label>&#123;StartDate&#125;</label>
                                 <DatePicker selected={new Date(startDate)} onChange={(date) => setStartDate(date)} />
                             <label>&#123;EndDate&#125;</label>
                                 <DatePicker selected={new Date(endDate)} onChange={(date) => setEndDate(date)} />
+                                {
+                                isTemplate == true && (
+                                <div><i>Templates can use 1/1/2001 for &#123;StartDate&#125; and &#123;EndDate&#125; to make these dates dynamic based on contract creation date.</i></div>
+                                )}
                              
                         {
                                 isTemplate == true && (

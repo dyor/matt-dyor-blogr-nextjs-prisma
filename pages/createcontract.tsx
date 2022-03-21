@@ -32,9 +32,9 @@ function Add() {
             name: '',
             email: ''
         },
-        startDate: new Date(),
+        startDate: new Date("1/1/2001"),
         duration: 0,
-        endDate: new Date(new Date().setFullYear(new Date().getFullYear() + 1)),
+        endDate: new Date("1/1/2001"),//new Date(new Date().setFullYear(new Date().getFullYear() + 1)),
         amount: 0,
         showAmount: false, 
         interestRate: 0, 

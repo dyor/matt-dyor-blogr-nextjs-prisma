@@ -8,6 +8,7 @@ import prisma from '../../lib/prisma';
 import { ContractProps } from '../../components/Contract';
 import Router from 'next/router';
 import parseISO from 'date-fns/parseISO'
+import Layout from "../../components/Layout";
 
 
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -31,9 +32,18 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
 
 const Sign: React.FC<ContractProps> = (props) => {
   const { data: session } = useSession();
+  if (!session) {
+    return (
+      <Layout>
+        <div className="page jumbotron text-center">
+          <h1>You need to be authenticated to view this page</h1>
+          Sign up or sign in using the Log in button in the top right.</div>
+      </Layout>
+    );
+  }
   const [message, setMessage] = useState(''); // This will be used to show a message if the submission is successful
   const [submitted, setSubmitted] = useState(false);
-  const re = new RegExp(props.firstPartyName);
+  const re = new RegExp(session.user.name);
   let data = {};
 
   const formik = useFormik({
@@ -221,7 +231,7 @@ const Sign: React.FC<ContractProps> = (props) => {
                 type="text"
                 name="name"
                 className="form-control btn-space"
-                placeholder={props.firstPartyName}
+                placeholder={session.user.name}
                 value={formik.values.name}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
@@ -236,7 +246,7 @@ const Sign: React.FC<ContractProps> = (props) => {
               <button className="back btn-space btn btn-secondary" onClick={() => Router.push(`/c/${props.id}`)}>Cancel</button>
 
             </div>
-            <div><em> Enter your name ({props.firstPartyName}) + click sign</em></div>
+            <div><em> Enter your name ({session.user.name}) + click sign</em></div>
 
             <div>{props.firstPartyName} {props.firstPartyEmail} signed {props.firstPartySignDate ? props.firstPartySignDate : "not yet"}</div>
             <div>{props.secondPartyName} {props.secondPartyEmail} signed {props.secondPartySignDate ? props.secondPartySignDate : "not yet"}</div>

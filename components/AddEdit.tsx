@@ -279,9 +279,11 @@ const AddEdit: React.FC<Props> = (props) => {
                                 <div><i>Templates can use 1/1/2001 for &#123;StartDate&#125; and &#123;EndDate&#125; to make these dates dynamic based on contract creation date.</i></div>
                                 )}
                             <label>&#123;StartDate&#125;</label>
-                                <DatePicker selected={new Date(startDate)} onChange={(date) => setStartDate(date)} />
+                                <DatePicker selected={new Date(startDate)} onChange={(date) => date.getDate() > 27 ? setStartDate(new Date(date.getFullYear(), date.getMonth() + 1, 1)) : setStartDate(date)  } />
                             <label>&#123;EndDate&#125;</label>
-                                <DatePicker selected={new Date(endDate)} onChange={(date) => setEndDate(date)} />
+                                <DatePicker selected={new Date(endDate)} onChange={(date) => date.getDate() > 27 ? setEndDate(new Date(date.getFullYear(), date.getMonth() + 1, 1)) : setEndDate(date)  } />
+                                {/* <DatePicker selected={new Date(endDate)} onChange={(date) => setEndDate(date)} /> */}
+                                
                                 
                              
                         {

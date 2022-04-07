@@ -113,6 +113,8 @@ const AddEdit: React.FC<Props> = (props) => {
     const [firstPartySignDate, setFirstPartySignDate] = useState(contract.firstPartySignDate); 
     const [secondPartySignDate, setSecondPartySignDate] = useState(contract.secondPartySignDate); 
     const [duration, setDuration] = useState(contract.duration); 
+    const [allowCustomContract, setAllowCustomContract] = useState(contract.allowCustomContract); 
+    
 
     let myDuration = 0; 
     let myMonthlyPayment = ""; 
@@ -145,7 +147,7 @@ const AddEdit: React.FC<Props> = (props) => {
                 
                 
                
-            const body = { title, content, summary, firstPartyName, firstPartyEmail, secondPartyName, secondPartyEmail, renderedContent, isTemplate, startDate, endDate, amount, showAmount, interestRate, showInterestRate, duration };
+            const body = { title, content, summary, firstPartyName, firstPartyEmail, secondPartyName, secondPartyEmail, renderedContent, isTemplate, allowCustomContract, startDate, endDate, amount, showAmount, interestRate, showInterestRate, duration };
 
             return isAddMode
                 ? createContract(body)
@@ -279,9 +281,9 @@ const AddEdit: React.FC<Props> = (props) => {
                                 <div><i>Templates can use 1/1/2001 for &#123;StartDate&#125; and &#123;EndDate&#125; to make these dates dynamic based on contract creation date.</i></div>
                                 )}
                             <label>&#123;StartDate&#125;</label>
-                                <DatePicker selected={new Date(startDate)} onChange={(date) => date.getDate() > 27 ? setStartDate(new Date(date.getFullYear(), date.getMonth() + 1, 1)) : setStartDate(date)  } />
+                                <DatePicker selected={new Date(startDate)} onChange={(date) => date.getDate() > 28 ? setStartDate(new Date(date.getFullYear(), date.getMonth() + 1, 1)) : setStartDate(date)  } />
                             <label>&#123;EndDate&#125;</label>
-                                <DatePicker selected={new Date(endDate)} onChange={(date) => date.getDate() > 27 ? setEndDate(new Date(date.getFullYear(), date.getMonth() + 1, 1)) : setEndDate(date)  } />
+                                <DatePicker selected={new Date(endDate)} onChange={(date) => date.getDate() > 28 ? setEndDate(new Date(date.getFullYear(), date.getMonth() + 1, 1)) : setEndDate(date)  } />
                                 {/* <DatePicker selected={new Date(endDate)} onChange={(date) => setEndDate(date)} /> */}
                                 
                                 
@@ -326,6 +328,21 @@ const AddEdit: React.FC<Props> = (props) => {
                         />
                         </div>
                         )}
+                                                {
+                                isTemplate == false && (
+                                    <div>
+                                        Convert this to a Template? <input type="checkbox" checked={isTemplate} onChange={() => setIsTemplate(!isTemplate)} />
+                                        </div>
+                                )
+                        }
+                                                {
+                                isTemplate == true && (
+                                    <div>
+                                        Allow Custom Contracts? <input type="checkbox" checked={allowCustomContract} onChange={() => setAllowCustomContract(!allowCustomContract)} />
+                                        </div>
+                                )
+                        }
+
                         <h2>Calculated Fields</h2>
                         {
                             firstPartySignDate != null && (
@@ -340,13 +357,6 @@ const AddEdit: React.FC<Props> = (props) => {
                         <div>{secondPartySignDate}</div>
                         </>
                             )}
-                        {
-                                isTemplate == false && (
-                                    <div>
-                                        Convert this to a Template? <input type="checkbox" checked={isTemplate} onChange={() => setIsTemplate(!isTemplate)} />
-                                        </div>
-                                )
-                        }
                         <div>&#123;Duration&#125;</div>
                         <div>
                         {
@@ -355,12 +365,17 @@ const AddEdit: React.FC<Props> = (props) => {
                         </div>
                         {
                             amount > 0 && interestRate > 0 && startDate != null && endDate != null && (
-                                <><div>&#123;MontlyPayment&#125;</div>
+                                <><div>&#123;MonthlyPayment&#125;</div>
                                 <div>
                         {
                             myMonthlyPayment = monthlyPayment(amount, monthDiff(startDate,endDate), interestRate/100)
                         }
                         </div>
+                        <div>
+                            {
+                            parse(generatePaymentSchedule(startDate,endDate, myMonthlyPayment))
+                            }
+                            </div>
                         </>
                         )}
                         <div>
@@ -373,7 +388,7 @@ const AddEdit: React.FC<Props> = (props) => {
                 </div>
                 <div className="col-sm" >
                     {
-                        isTemplate == true && (
+                        (isTemplate == true || allowCustomContract == true ) && (
                             <>
                                 <div>
                                 <h2>Template Body</h2>
@@ -468,7 +483,19 @@ function monthDiff(d1, d2) {
     return months <= 0 ? 0 : months;
 }
 
+function generatePaymentSchedule(d1, d2, myMonthlyPayment){
+    let myDuration = monthDiff(d1, d2); 
+    const d00 = new Date('1/1/1970'); 
+    let d0 = new Date(d1); 
+    // let myMonths = []; 
+    let myMonths ="<table border=1>"; 
 
+    for (let i = 0; i< myDuration; i++){
+        myMonths += "<tr><td>" + new Date(d0.setMonth(d0.getMonth()+1)).toLocaleDateString() + "</td><td>" + Math.round((d0.getTime() - d00.getTime())/1000) + "</td><td>$"+ myMonthlyPayment +"</td></tr>"; 
+    }
+    myMonths += "</table>";
+    return myMonths; 
+}
 
 
 //monthly mortgage payment

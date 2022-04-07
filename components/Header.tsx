@@ -150,14 +150,14 @@ const Header: React.FC = () => {
         <p>
           {session.user.name} ({session.user.email})
         </p>
-        <Link href="/createcontract">
+        {/* <Link href="/createcontract">
           <button className="btn btn-secondary btn-space">
             <a>+ New Template</a>
           </button>
-        </Link>
+        </Link> */}
         <Link href="/">
           <button className="btn btn-secondary btn-space">
-            <a>+ New Contract</a>
+            <a>+ New Contract from Template</a>
           </button>
         </Link>
         <button className="btn btn-secondary btn-space" onClick={() => signOut()}>

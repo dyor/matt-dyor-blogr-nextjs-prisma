@@ -62,7 +62,7 @@ const ContractList: React.FC<Props> = (props) => {
       <div className="page">
         {props.myTemplates?.length > 0 && (
           <>
-            <h1>My Contract Templates</h1>
+            <h1>My Templates</h1>
             <main>
               {props.myTemplates.map((contract) => (
                 <div key={contract.id} className="contract">
@@ -74,7 +74,7 @@ const ContractList: React.FC<Props> = (props) => {
         )}
         {props.publicTemplates?.length > 0 && (
           <>
-            <h1>Public Contract Templates</h1>
+            <h1>Public Templates</h1>
             <main>
               {props.publicTemplates.map((contract) => (
                 <div key={contract.id} className="contract">

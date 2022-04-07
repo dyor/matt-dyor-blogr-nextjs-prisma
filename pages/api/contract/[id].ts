@@ -46,7 +46,7 @@ export default async function handle(req, res) {
         showAmount: Boolean(req.body.showAmount),
         interestRate: req.body.interestRate, 
         showInterestRate: Boolean(req.body.showInterestRate),
-
+        allowCustomContract: Boolean(req.body.allowCustomContract), 
       }
       
     }

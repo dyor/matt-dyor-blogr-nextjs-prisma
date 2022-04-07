@@ -16,6 +16,7 @@ model Contract {
   isPublished Boolean @default(false)
   isPublic Boolean @default(false)
   isTemplate Boolean @default(false)
+  allowCustomContract Boolean @default(false)
   author    User?   @relation(name: "author", fields: [authorId], references: [id])
   authorId  Int?
   firstPartyName String?

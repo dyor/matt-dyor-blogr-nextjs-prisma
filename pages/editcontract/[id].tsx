@@ -37,6 +37,7 @@ const Edit: React.FC<ContractProps> = (props) => {
       secondPartyEmail: props.secondPartyEmail,
       renderedContent: props.renderedContent,
       isTemplate: props.isTemplate,
+      allowCustomContract: props.allowCustomContract, 
       author: {
         name: '',
         email: ''

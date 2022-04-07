@@ -16,6 +16,7 @@ function Add() {
         secondPartyEmail: "",
         renderedContent: "",
         isTemplate: true,
+        allowCustomContract: false,
         author: {
             name: '',
             email: ''

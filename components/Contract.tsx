@@ -40,6 +40,7 @@ export type ContractProps = {
   showAmount: boolean;
   interestRate: number; 
   showInterestRate: boolean;
+  allowCustomContract: boolean; 
 
   //template: number; 
   

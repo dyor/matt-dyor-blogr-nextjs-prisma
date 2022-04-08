@@ -4,6 +4,7 @@ import Layout from "../components/Layout"
 import Contract, { ContractProps } from "../components/Contract"
 import prisma from '../lib/prisma';
 import { useSession, getSession } from 'next-auth/react';
+import { Col, Container, Row } from "react-bootstrap";
 // import './src/styles.css';
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
@@ -64,23 +65,38 @@ const ContractList: React.FC<Props> = (props) => {
           <>
             <h1>My Templates</h1>
             <main>
+            <Container>
+                <Row>
               {props.myTemplates.map((contract) => (
-                <div key={contract.id} className="contract">
+                
+                  <Col xs={6}>
+                    <div key={contract.id} className="contract">
                   <Contract contract={contract} myEmail={session.user.email} />
                 </div>
+                </Col>
+  
               ))}
+              </Row>
+</Container>
             </main>
           </>
         )}
         {props.publicTemplates?.length > 0 && (
           <>
+          <br/>
             <h1>Public Templates</h1>
             <main>
+            <Container>
+                <Row>
               {props.publicTemplates.map((contract) => (
+                <Col xs={6}>
                 <div key={contract.id} className="contract">
                   <Contract contract={contract} myEmail={session.user.email} />
                 </div>
+                </Col>
               ))}
+              </Row>
+</Container>
             </main>
           </>
         )}
@@ -95,7 +111,7 @@ const ContractList: React.FC<Props> = (props) => {
           box-shadow: 1px 1px 3px #aaa;
         }
 
-        .contract + .contract {
+        .contract {
           margin-top: 1rem;
         }
       `}</style>

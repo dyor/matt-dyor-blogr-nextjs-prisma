@@ -42,7 +42,7 @@ const Header: React.FC = () => {
       <div className="left">
         <Link href="/">
           <a data-active={isActive('/')}>
-            Templates d
+            Templates
           </a>
         </Link>
         <style jsx>{`
@@ -156,7 +156,7 @@ const Header: React.FC = () => {
           </button>
         </Link> */}
         <Link href="/">
-          <button className="btn btn-secondary btn-space">
+          <button className="btn btn-success                                                       btn-space">
             <a>+ New Contract from Template</a>
           </button>
         </Link>

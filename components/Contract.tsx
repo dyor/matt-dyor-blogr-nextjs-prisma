@@ -97,7 +97,7 @@ const Contract: React.FC<{ contract: ContractProps, myEmail: string }> = ({ cont
       {
           contract.isTemplate &&  (
       <>
-        <button onClick={() => createChildContract(contract)} className="btn btn-success btn-space">Create Contract from Template
+        <button onClick={() => createChildContract(contract)} className="btn btn-success btn-space">+
         </button>
         <button onClick={() => Router.push("/c/[id]", `/c/${contract.id}`)} className="btn btn-secondary btn-space">Template Details</button>
         </>
@@ -112,14 +112,14 @@ const Contract: React.FC<{ contract: ContractProps, myEmail: string }> = ({ cont
         )
       }
       {
-        !contract.isTemplate && (!(contract.firstPartyEmail==myEmail)) && contract.firstPartySignDate == null &&  (
+        !contract.isTemplate && (!(contract.firstPartyEmail==myEmail)) && contract.firstPartySignDate == null && contract.firstPartyEmail != "" &&  (
     
           <button onClick={() => {window.location.href = `mailto://${contract.secondPartyEmail}?subject=Please Review Contract&body=https://matt-dyor-blogr-nextjs-prisma.vercel.app/sign/${contract.id}`; Router.push(`/sign/${contract.id}`)}} className="btn btn-secondary btn-space">Send to {contract.firstPartyEmail}</button>
       
         )
       }
       {
-        (!contract.isTemplate) && (!(contract.secondPartyEmail==myEmail)) && contract.secondPartySignDate == null &&  (
+        (!contract.isTemplate) && (!(contract.secondPartyEmail==myEmail)) && contract.secondPartySignDate == null  && contract.secondPartyEmail != "" &&  (
     
           <button onClick={() => {window.location.href = `mailto://${contract.secondPartyEmail}?subject=Please Review Contract&body=https://matt-dyor-blogr-nextjs-prisma.vercel.app/sign/${contract.id}`; Router.push(`/sign/${contract.id}`)}}  className="btn btn-secondary btn-space">Send to {contract.secondPartyEmail}{contract.secondPartyEmail}</button>
         )

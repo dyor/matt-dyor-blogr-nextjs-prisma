@@ -17,7 +17,7 @@ textarea, input {
   box-shadow: 1px 1px 3px #aaa;
 }
 
-.contract + .contract {
+.contract {
   margin-top: 1rem;
 }
 

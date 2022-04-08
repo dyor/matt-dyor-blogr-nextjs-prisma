@@ -6,6 +6,7 @@ import { useSession, getSession } from 'next-auth/react';
 import Layout from '../components/Layout';
 import Contract, { ContractProps } from '../components/Contract';
 import prisma from '../lib/prisma';
+import { Container, Row, Col } from 'react-bootstrap';
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
   const session = await getSession({ req });
@@ -158,7 +159,7 @@ const Contracts: React.FC<Props> = (props) => {
       }
       {props.toSignByOthersContracts.length > 0 && (
         <div className="page">
-          <h1>Contracts Signatures from Others</h1>
+          <h1>Contracts Needing Signatures from Others</h1>
           <main>
             {props.toSignByOthersContracts.map((contract) => (
               <div key={contract.id} className="contract">
@@ -170,15 +171,21 @@ const Contracts: React.FC<Props> = (props) => {
       )
 
       }
-
+      <br/>
       <div className="page">
         <h1>My Contracts</h1>
         <main>
+        <Container>
+                <Row>
           {props.contracts.map((contract) => (
+            <Col xs={6}>
             <div key={contract.id} className="contract">
               <Contract contract={contract} myEmail={session.user.email}/>
             </div>
+            </Col>
           ))}
+            </Row>
+</Container>
         </main>
       </div>
     </Layout>

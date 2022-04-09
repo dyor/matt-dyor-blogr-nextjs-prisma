@@ -229,7 +229,7 @@ const Sign: React.FC<ContractProps> = (props) => {
                 type="text"
                 name="name"
                 className="form-control btn-space signbox"
-                placeholder={session.user.namhandleBlure}
+                placeholder={session.user.name}
                 value={formik.values.name}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}

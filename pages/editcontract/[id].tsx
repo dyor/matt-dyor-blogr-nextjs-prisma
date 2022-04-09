@@ -39,8 +39,8 @@ const Edit: React.FC<ContractProps> = (props) => {
       isTemplate: props.isTemplate,
       allowCustomContract: props.allowCustomContract, 
       author: {
-        name: '',
-        email: ''
+        name: props.author.name,
+        email: props.author.email
       },
       isPublished: props.isPublished,
       isPublic: props.isPublic,

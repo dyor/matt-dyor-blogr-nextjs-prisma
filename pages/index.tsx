@@ -57,6 +57,15 @@ const ContractList: React.FC<Props> = (props) => {
         <div className="page jumbotron text-center">
           <h1>You need to be authenticated to view this page</h1>
           <Link href="/api/auth/signin">Sign up or sign in</Link> to get started.</div>
+          <br/>
+          If you want to explore first, check out: 
+          
+          <ul>
+            {/* <li><Link href="/sign/97">contract signing experience</Link></li> after you sign in with LinkedIn or GitHub, sign by typing your name. */}
+            <li><Link href="/editcontract/98">contract creation experience</Link></li> fill in key terms, and contract preview automatically updates. 
+            <li><Link href="/editcontract/89">template creation experience</Link></li> for contracts that you are going to write time and again, create a template. 
+            </ul> 
+          
       </Layout>
     );
   }

@@ -130,6 +130,8 @@ const AddEdit: React.FC<Props> = (props) => {
 
 
     const onSubmit = (data, e) => {
+        console.log("autthor", props.contract.author.email); 
+        if (session && session.user.email == props.contract.author.email) {
         try {
             const renderedContent = content
                 .split("{Summary}").join(summary)
@@ -155,6 +157,7 @@ const AddEdit: React.FC<Props> = (props) => {
         } catch (error) {
             console.error(error);
         }
+    }
     }
 
 
@@ -380,9 +383,12 @@ const AddEdit: React.FC<Props> = (props) => {
                         )}
                         <div>
                             <br/>
+                            {session && (
                             <button disabled={!content || !title} type="submit"  className="btn btn-primary btn-space" onSubmit={handleSubmit(onSubmit, onError)}>{saveButtonLabel}</button>
+                            )}
                             <button className="back btn-space btn btn-secondary" onClick={() => Router.push('/')}>Cancel</button>   
-                            
+                            <br/>
+                            <br/>
                         </div>
                         
                 </div>

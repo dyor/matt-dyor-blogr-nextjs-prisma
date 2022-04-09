@@ -60,7 +60,7 @@ const ContractList: React.FC<Props> = (props) => {
     );
   }
   return (
-    <Layout>
+    <Layout> 
       <div className="page">
         {props.myTemplates?.length > 0 && (
           <>

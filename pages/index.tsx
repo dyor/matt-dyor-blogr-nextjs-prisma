@@ -6,6 +6,7 @@ import prisma from '../lib/prisma';
 import { useSession, getSession } from 'next-auth/react';
 import { Col, Container, Row } from "react-bootstrap";
 import Link from "next/link";
+import Head from "next/head";
 // import './src/styles.css';
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
@@ -60,6 +61,7 @@ const ContractList: React.FC<Props> = (props) => {
     );
   }
   return (
+    <>
     <Layout> 
       <div className="page">
         {props.myTemplates?.length > 0 && (
@@ -110,6 +112,14 @@ const ContractList: React.FC<Props> = (props) => {
         }
       `}</style>
     </Layout>
+          <Head>
+          <title>SparkContract: Templates</title>
+          <meta
+            name="description"
+            content="Templates that you have created or that others have created and made public. "
+          />
+        </Head>
+        </>
   )
 }
 

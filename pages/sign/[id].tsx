@@ -11,6 +11,7 @@ import Layout from "../../components/Layout";
 
 
 import { useSession } from 'next-auth/react';
+import Head from 'next/head';
 
 export const getServerSideProps: GetServerSideProps = async ({ params }) => {
   const contract = await prisma.contract.findUnique({
@@ -84,7 +85,10 @@ const Sign: React.FC<ContractProps> = (props) => {
   });
 
   return (
+    <>
+    
     <Layout>
+
       <div className="jumbotron text-center">
         <h1>Review and Sign Contract</h1>
         <p>Review contract then type your name in the box below + click "Sign" button to sign contract.  </p>
@@ -274,6 +278,14 @@ const Sign: React.FC<ContractProps> = (props) => {
         </div>
       </div>
       </Layout>
+      <Head>
+        <title>SparkContract: {props.title}</title>
+        <meta
+          name="description"
+          content={props.summary}
+        />
+      </Head>
+      </>
   );
 };
 

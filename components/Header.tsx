@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { signOut, useSession } from 'next-auth/react';
 import { Nav, Navbar, NavDropdown } from "react-bootstrap";
-// import { ReactComponent as Logo } from "./logo.svg";
+import Head from 'next/head'
 
 
 const Header: React.FC = () => {
@@ -220,6 +220,7 @@ const Header: React.FC = () => {
 
           .right {
             margin-left: auto;
+            padding-bottom: 25px; 
           }
 
           .right a {
@@ -247,7 +248,13 @@ const Header: React.FC = () => {
   //   </nav>
   // );
   return(
-    right
+    <>
+    <Head>
+        
+        <title>SparkContract</title>
+    </Head>
+    {right}
+    </>
   );
 };
 

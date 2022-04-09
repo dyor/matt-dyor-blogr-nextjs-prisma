@@ -10,6 +10,7 @@ import { useSession } from 'next-auth/react';
 import prisma from '../../lib/prisma';
 import DOMPurify from "dompurify";
 import parseISO from 'date-fns/parseISO'
+import Head from 'next/head';
 
 export const getServerSideProps: GetServerSideProps = async ({ params }) => {
   const contract = await prisma.contract.findUnique({
@@ -97,6 +98,7 @@ const Contract: React.FC<ContractProps> = (props) => {
     USE_PROFILES: { html: true },
   });
   return (
+    <>
     <Layout>
       <div>
       <div className="container border border-secondary contract">
@@ -295,6 +297,14 @@ const Contract: React.FC<ContractProps> = (props) => {
 
       `}</style>
     </Layout>
+          <Head>
+          <title>SparkContract: {props.title}</title>
+          <meta
+            name="description"
+            content="Meta description for the About page"
+          />
+        </Head>
+        </>
   );
 };
 

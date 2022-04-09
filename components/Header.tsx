@@ -175,7 +175,7 @@ const Header: React.FC = () => {
       <Navbar.Collapse id="responsive-navbar-nav">
         <Nav className="mx-3">
         
-        <Nav.Link className="m-5" href="/contracts">Hello {session.user.name} ({session.user.email})</Nav.Link>
+        <Nav.Link href="/contracts">Hello {session.user.name} ({session.user.email})</Nav.Link>
           <Nav.Link href="/contracts">My Contracts</Nav.Link>
           <Nav.Link href="/">New Contract</Nav.Link>
           <Nav.Link href="#" onClick={() => signOut()}>Logout</Nav.Link>

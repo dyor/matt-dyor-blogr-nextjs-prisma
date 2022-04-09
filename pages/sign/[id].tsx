@@ -7,11 +7,9 @@ import { GetServerSideProps } from 'next';
 import prisma from '../../lib/prisma';
 import { ContractProps } from '../../components/Contract';
 import Router from 'next/router';
-import parseISO from 'date-fns/parseISO'
 import Layout from "../../components/Layout";
 
 
-import 'bootstrap/dist/css/bootstrap.min.css';
 import { useSession } from 'next-auth/react';
 
 export const getServerSideProps: GetServerSideProps = async ({ params }) => {
@@ -86,7 +84,7 @@ const Sign: React.FC<ContractProps> = (props) => {
   });
 
   return (
-    <>
+    <Layout>
       <div className="jumbotron text-center">
         <h1>Review and Sign Contract</h1>
         <p>Review contract then type your name in the box below + click "Sign" button to sign contract.  </p>
@@ -230,13 +228,13 @@ const Sign: React.FC<ContractProps> = (props) => {
               <input
                 type="text"
                 name="name"
-                className="form-control btn-space"
-                placeholder={session.user.name}
+                className="form-control btn-space signbox"
+                placeholder={session.user.namhandleBlure}
                 value={formik.values.name}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
               />
-              <button type="submit" className="btn btn-primary btn-space">
+              <button type="submit" className="btn purple btn-space">
                 Sign
               </button>
 
@@ -264,8 +262,7 @@ const Sign: React.FC<ContractProps> = (props) => {
               margin-left: 5px;
               vertical-align: unset; 
           }
-            input[type='text'],
-            textarea {
+            .signbox {
               width: auto;
               padding: 0.5rem;
               margin: 0.5rem 0;
@@ -276,7 +273,7 @@ const Sign: React.FC<ContractProps> = (props) => {
           </style>
         </div>
       </div>
-    </>
+      </Layout>
   );
 };
 

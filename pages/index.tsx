@@ -64,18 +64,15 @@ const ContractList: React.FC<Props> = (props) => {
       <div className="page">
         {props.myTemplates?.length > 0 && (
           <>
-            <h1>My Templates</h1>
+          <br/>
+            <h3>My Templates</h3>
             <main>
             <Container>
                 <Row>
               {props.myTemplates.map((contract) => (
                 
-                <Col xs={12} sm={12} md={6}>
-                    <div key={contract.id} className="contract">
-                  <Contract contract={contract} myEmail={session.user.email} />
-                </div>
-                </Col>
-  
+                // <Col xs={12} sm={12} md={6}  lg={4} className="align-items-stretch d-flex">
+                  <Contract contract={contract} myEmail={session.user.email} />  
               ))}
               </Row>
 </Container>
@@ -85,16 +82,12 @@ const ContractList: React.FC<Props> = (props) => {
         {props.publicTemplates?.length > 0 && (
           <>
           <br/>
-            <h1>Public Templates</h1>
+            <h3>Public Templates</h3>
             <main>
             <Container>
                 <Row>
               {props.publicTemplates.map((contract) => (
-                <Col xs={12} sm={12} md={6}>
-                <div key={contract.id} className="contract">
                   <Contract contract={contract} myEmail={session.user.email} />
-                </div>
-                </Col>
               ))}
               </Row>
 </Container>

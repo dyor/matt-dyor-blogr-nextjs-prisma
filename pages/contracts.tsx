@@ -66,6 +66,11 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
             NOT: {
               firstPartyEmail: session.user.email
             }
+          }, 
+          {
+            NOT: {
+              firstPartyEmail: ''
+            }
           }]
         },
         {
@@ -74,6 +79,11 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
           }, {
             NOT: {
               secondPartyEmail: session.user.email
+            }
+          },
+          {
+            NOT: {
+              secondPartyEmail: ''
             }
           }]
         },
@@ -145,16 +155,13 @@ const Contracts: React.FC<Props> = (props) => {
     <Layout>
       {props.toSignContracts.length > 0 && (
         <div className="page">
-          <h1>Contracts Needing My Signature</h1>
+          <br/>
+          <h3>Contracts Needing My Signature</h3>
           <main>
           <Container>
             <Row>
             {props.toSignContracts.map((contract) => (
-              <Col xs={12} sm={12} md={6}>
-              <div key={contract.id} className="contract">
                 <Contract contract={contract} myEmail={session.user.email} />
-              </div>
-              </Col>
             ))}
             </Row>
           </Container>
@@ -165,16 +172,13 @@ const Contracts: React.FC<Props> = (props) => {
       }
       {props.toSignByOthersContracts.length > 0 && (
         <div className="page">
-          <h1>Contracts Needing Signatures from Others</h1>
+          <br/>
+          <h3>Contracts Needing Signatures from Others</h3>
           <main>
           <Container>
             <Row>
             {props.toSignByOthersContracts.map((contract) => (
-              <Col xs={12} sm={12} md={6}>
-              <div key={contract.id} className="contract">
                 <Contract contract={contract} myEmail={session.user.email} />
-              </div>
-              </Col>
             ))}
             </Row>
           </Container>
@@ -185,16 +189,12 @@ const Contracts: React.FC<Props> = (props) => {
       }
       <br/>
       <div className="page">
-        <h1>My Contracts</h1>
+        <h3>My Contracts</h3>
         <main>
         <Container>
          <Row>
           {props.contracts.map((contract) => (
-            <Col xs={12} sm={12} md={6}>
-            <div key={contract.id} className="contract">
               <Contract contract={contract} myEmail={session.user.email}/>
-            </div>
-            </Col>
           ))}
             </Row>
         </Container>

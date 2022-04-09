@@ -31,6 +31,22 @@ html {
   box-sizing: inherit;
 }
 
+.purple {
+  background-color: #6a0dad;
+  color: #fff; 
+}
+
+.purple:hover {
+  background-color: #4d0381;
+  color: #fff; 
+}
+
+.lightpurple {
+  background-color: #ead5f8;
+}
+
+
+
 body {
   margin: 0;
   padding: 0;

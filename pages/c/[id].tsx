@@ -238,26 +238,26 @@ const Contract: React.FC<ContractProps> = (props) => {
         }
         {
           props.isTemplate &&  (
-            <button onClick={() => createChildContract(props)} className="btn btn-success btn-space">Create Contract from Template</button> 
+            <button onClick={() => createChildContract(props)} className="btn purple btn-space">Start Contract from Template</button> 
           )
         }
         {
           !props.isTemplate && props.firstPartyEmail == session.user.email && props.firstPartySignDate==null && (
-            <button onClick={() => signContract(props.id)} className="btn btn-success btn-space">Sign Contract</button> 
+            <button onClick={() => signContract(props.id)} className="btn purple btn-space">Sign Contract</button> 
           )
         }
         {
-          !props.isTemplate && props.secondPartyEmail == session.user.email && props.secondPartySignDate==null && (
+          !props.isTemplate && props.secondPartyEmail == session.user.email && props.secondPartySignDate==null &&  (
             <button onClick={() => signContract(props.id)} className="btn btn-success btn-space">Sign Contract</button> 
           )
         }
          {
-          !props.isTemplate && !(props.firstPartyEmail == session.user.email) && props.firstPartySignDate==null && (
+          !props.isTemplate && !(props.firstPartyEmail == session.user.email) && props.firstPartySignDate==null && props.firstPartyEmail != "" &&  (
             <button onClick={() => {window.location.href = `mailto://${props.firstPartyEmail}?subject=Please Review Contract&body=https://matt-dyor-blogr-nextjs-prisma.vercel.app/sign/${props.id}`; Router.push(`/sign/${props.id}`)}} className="btn btn-success btn-space">Send to {props.firstPartyEmail}</button> 
           )
         }
         {
-          !props.isTemplate && (!(props.secondPartyEmail == session.user.email)) && props.secondPartySignDate==null && (
+          !props.isTemplate && (!(props.secondPartyEmail == session.user.email)) && props.secondPartySignDate==null && props.secondPartyEmail != "" && (
             // <button onClick={() => {Router.push(`mailto://${props.secondPartyEmail}?subject=Please Review Contract&body=https://matt-dyor-blogr-nextjs-prisma.vercel.app/sign/${props.id}`); Router.push(`/sign/${props.id}`)}}  className="btn btn-success btn-space">Send to {props.secondPartyEmail}</button>
             <button onClick={() => {window.location.href = `mailto://${props.secondPartyEmail}?subject=Please Review Contract&body=https://matt-dyor-blogr-nextjs-prisma.vercel.app/sign/${props.id}`; Router.push(`/sign/${props.id}`)}}  className="btn btn-success btn-space">Send to {props.secondPartyEmail}</button> 
           )

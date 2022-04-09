@@ -147,11 +147,17 @@ const Contracts: React.FC<Props> = (props) => {
         <div className="page">
           <h1>Contracts Needing My Signature</h1>
           <main>
+          <Container>
+            <Row>
             {props.toSignContracts.map((contract) => (
+              <Col xs={12} sm={12} md={6}>
               <div key={contract.id} className="contract">
                 <Contract contract={contract} myEmail={session.user.email} />
               </div>
+              </Col>
             ))}
+            </Row>
+          </Container>
           </main>
         </div>
       )
@@ -161,11 +167,17 @@ const Contracts: React.FC<Props> = (props) => {
         <div className="page">
           <h1>Contracts Needing Signatures from Others</h1>
           <main>
+          <Container>
+            <Row>
             {props.toSignByOthersContracts.map((contract) => (
+              <Col xs={12} sm={12} md={6}>
               <div key={contract.id} className="contract">
                 <Contract contract={contract} myEmail={session.user.email} />
               </div>
+              </Col>
             ))}
+            </Row>
+          </Container>
           </main>
         </div>
       )
@@ -176,16 +188,16 @@ const Contracts: React.FC<Props> = (props) => {
         <h1>My Contracts</h1>
         <main>
         <Container>
-                <Row>
+         <Row>
           {props.contracts.map((contract) => (
-            <Col xs={6}>
+            <Col xs={12} sm={12} md={6}>
             <div key={contract.id} className="contract">
               <Contract contract={contract} myEmail={session.user.email}/>
             </div>
             </Col>
           ))}
             </Row>
-</Container>
+        </Container>
         </main>
       </div>
     </Layout>

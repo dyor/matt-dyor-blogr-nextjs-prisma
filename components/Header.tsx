@@ -3,6 +3,9 @@ import React from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { signOut, useSession } from 'next-auth/react';
+import { Nav, Navbar, NavDropdown } from "react-bootstrap";
+// import { ReactComponent as Logo } from "./logo.svg";
+
 
 const Header: React.FC = () => {
   const router = useRouter();
@@ -81,10 +84,17 @@ const Header: React.FC = () => {
   if (!session) {
     right = (
       <div className="right">
-        <Link href="/api/auth/signin">
-          <a data-active={isActive('/signup')}>Log in</a>
-        </Link>
+        <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
+      <Navbar.Brand href="/api/auth/signin">
+        <img src="/favicon-32x32.png" className='mynav'></img>
+        sign in to SparkContract
+      </Navbar.Brand>
+      </Navbar>
         <style jsx>{`
+        .mynav {
+          padding-left: 0.5rem; 
+          padding-right: 0.5rem; 
+        }
           a {
             text-decoration: none;
             color: var(--geist-foreground);
@@ -125,6 +135,7 @@ const Header: React.FC = () => {
             </a>
         </Link>
         <style jsx>{`
+        
           .bold {
             font-weight: bold;
           }
@@ -147,23 +158,46 @@ const Header: React.FC = () => {
     );
     right = (
       <div className="right">
-        <p>
-          {session.user.name} ({session.user.email})
-        </p>
         {/* <Link href="/createcontract">
           <button className="btn btn-secondary btn-space">
             <a>+ New Template</a>
           </button>
         </Link> */}
-        <Link href="/">
-          <button className="btn btn-success                                                       btn-space">
-            <a>+ New Contract from Template</a>
-          </button>
-        </Link>
-        <button className="btn btn-secondary btn-space" onClick={() => signOut()}>
-          <a >Log out</a>
-        </button>
-        <style jsx>{`
+    <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
+      <Navbar.Brand href="/contracts">
+        <img src="/favicon-32x32.png" className='mynav'></img>
+        SparkContract
+      </Navbar.Brand>
+      {/* <Navbar.Text>
+          Hello {session.user.name} ({session.user.email})
+      </Navbar.Text> */}
+      <Navbar.Toggle aria-controls="responsive-navbar-nav" className="mx-3" />
+      <Navbar.Collapse id="responsive-navbar-nav">
+        <Nav className="mx-3">
+        
+        <Nav.Link className="m-5" href="/contracts" className='pr-5'>Hello {session.user.name} ({session.user.email})</Nav.Link>
+          <Nav.Link href="/contracts">My Contracts</Nav.Link>
+          <Nav.Link href="/">New Contract</Nav.Link>
+          <Nav.Link href="#" onClick={() => signOut()}>Logout</Nav.Link>
+          {/* <NavDropdown title="Dropdown" id="collasible-nav-dropdown">
+            <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
+            <NavDropdown.Item href="#action/3.2">
+              Another action
+            </NavDropdown.Item>
+            <NavDropdown.Item href="#action/3.3">Something</NavDropdown.Item>
+            <NavDropdown.Divider />
+            <NavDropdown.Item href="#action/3.4">
+              Separated link
+            </NavDropdown.Item>
+          </NavDropdown> */}
+        </Nav>
+      </Navbar.Collapse>
+    </Navbar>
+            <style jsx>{`
+          .mynav {
+            padding-left: 0.5rem; 
+            padding-right: 0.5rem; 
+          }
           .btn-space {
               margin-left: 5px;
               vertical-align: unset; 
@@ -199,18 +233,21 @@ const Header: React.FC = () => {
     );
   }
 
-  return (
-    <nav>
-      {left}
-      {right}
-      <style jsx>{`
-        nav {
-          display: flex;
-          padding: 2rem;
-          align-items: center;
-        }
-      `}</style>
-    </nav>
+  // return (
+  //   <nav>
+  //     {left}
+  //     {right}
+  //     <style jsx>{`
+  //       nav {
+  //         display: flex;
+  //         padding: 2rem;
+  //         align-items: center;
+  //       }
+  //     `}</style>
+  //   </nav>
+  // );
+  return(
+    right
   );
 };
 

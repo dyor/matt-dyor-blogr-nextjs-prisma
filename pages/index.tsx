@@ -5,6 +5,7 @@ import Contract, { ContractProps } from "../components/Contract"
 import prisma from '../lib/prisma';
 import { useSession, getSession } from 'next-auth/react';
 import { Col, Container, Row } from "react-bootstrap";
+import Link from "next/link";
 // import './src/styles.css';
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
@@ -54,7 +55,7 @@ const ContractList: React.FC<Props> = (props) => {
       <Layout>
         <div className="page jumbotron text-center">
           <h1>You need to be authenticated to view this page</h1>
-          Sign up or sign in using the Log in button in the top right.</div>
+          <Link href="/api/auth/signin">Sign up or sign in</Link> to get started.</div>
       </Layout>
     );
   }
@@ -69,7 +70,7 @@ const ContractList: React.FC<Props> = (props) => {
                 <Row>
               {props.myTemplates.map((contract) => (
                 
-                  <Col xs={6}>
+                <Col xs={12} sm={12} md={6}>
                     <div key={contract.id} className="contract">
                   <Contract contract={contract} myEmail={session.user.email} />
                 </div>
@@ -89,7 +90,7 @@ const ContractList: React.FC<Props> = (props) => {
             <Container>
                 <Row>
               {props.publicTemplates.map((contract) => (
-                <Col xs={6}>
+                <Col xs={12} sm={12} md={6}>
                 <div key={contract.id} className="contract">
                   <Contract contract={contract} myEmail={session.user.email} />
                 </div>

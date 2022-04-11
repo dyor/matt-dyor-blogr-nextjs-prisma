@@ -175,9 +175,10 @@ const Header: React.FC = () => {
       <Navbar.Collapse id="responsive-navbar-nav">
         <Nav className="mx-3">
         
-        <Nav.Link href="/contracts">Hello {session.user.name} ({session.user.email})</Nav.Link>
+        <Navbar.Text >{session.user.name} ({session.user.email})</Navbar.Text>
           <Nav.Link href="/contracts">My Contracts</Nav.Link>
           <Nav.Link href="/">New Contract</Nav.Link>
+          <Nav.Link href="/createcontract">New Template</Nav.Link>
           <Nav.Link href="#" onClick={() => signOut()}>Logout</Nav.Link>
           {/* <NavDropdown title="Dropdown" id="collasible-nav-dropdown">
             <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
@@ -250,8 +251,7 @@ const Header: React.FC = () => {
   return(
     <>
     <Head>
-        
-        <title>SparkContract</title>
+        <title>SparkContract: Smart Contract Authoring Service</title>
     </Head>
     {right}
     </>

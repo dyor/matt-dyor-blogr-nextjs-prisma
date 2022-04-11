@@ -43,6 +43,12 @@ export type ContractProps = {
   interestRate: number;
   showInterestRate: boolean;
   allowCustomContract: boolean;
+  showAccountTypes: boolean; 
+  firstPartyAccountType: string;  
+  firstPartyAccountId: string;  
+  secondPartyAccountType: string; 
+  secondPartyAccountId: string; 
+  contractId: string; 
 
   //template: number; 
 

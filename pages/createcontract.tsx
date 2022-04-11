@@ -40,6 +40,12 @@ function Add() {
         showAmount: false, 
         interestRate: 0, 
         showInterestRate: false, 
+        showAccountTypes: false, 
+        firstPartyAccountType: '', 
+        firstPartyAccountId: '', 
+        secondPartyAccountType: '', 
+        secondPartyAccountId: '', 
+        contractId: '', 
     };
     return (
         <Layout>

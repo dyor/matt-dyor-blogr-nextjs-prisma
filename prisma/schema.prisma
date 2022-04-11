@@ -29,6 +29,7 @@ model Contract {
   secondParty    User?   @relation(name: "secondParty", fields: [secondPartyId], references: [id])
   secondPartyId   Int?
   secondPartySignDate DateTime?
+  
   template Contract? @relation(name: "children", fields: [templateId], references: [id])
   templateId Int? 
   children    Contract[] @relation("children")
@@ -47,6 +48,12 @@ model Contract {
   showRoyaltyRate Boolean @default(false)
   showRoyaltyMultiple Boolean @default(false)
   showEquityPercentage Boolean @default(false)
+  showAccountTypes Boolean @default(false)
+  firstPartyAccountType String? 
+  firstPartyAccountId String? 
+  secondPartyAccountType String? 
+  secondPartyAccountId String? 
+  contractId String? 
   // SecondParty    User?   @relation(name: "secondParty", fields: [secondPartyId], references: [id])
   // secondPartyId  Int?
   

@@ -60,7 +60,13 @@ const Edit: React.FC<ContractProps> = (props) => {
       amount: props.amount,
       showAmount: props.showAmount, 
       interestRate: props.interestRate,
-      showInterestRate: props.showInterestRate
+      showInterestRate: props.showInterestRate, 
+      showAccountTypes: props.showAccountTypes,  
+      firstPartyAccountType: props.firstPartyAccountType,   
+      firstPartyAccountId: props.firstPartyAccountId, 
+      secondPartyAccountType: props.secondPartyAccountType,  
+      secondPartyAccountId: props.secondPartyAccountId,  
+      contractId: props.contractId, 
     };
 
     return ( 

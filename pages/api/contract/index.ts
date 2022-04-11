@@ -5,7 +5,7 @@ import prisma from '../../../lib/prisma';
 
 // CONTRACT /api/contract
 export default async function handle(req, res) {
-  const { title, content, summary, firstPartyName, firstPartyEmail, secondPartyName, secondPartyEmail, firstPartySignDate, secondPartySignDate, isPublic, renderedContent, isTemplate, allowCustomContract, template, startDate, endDate, amount, showAmount, interestRate, showInterestRate } = req.body;
+  const { title, content, summary, firstPartyName, firstPartyEmail, secondPartyName, secondPartyEmail, firstPartySignDate, secondPartySignDate, isPublic, renderedContent, isTemplate, allowCustomContract, template, startDate, endDate, amount, showAmount, interestRate, showInterestRate, showAccountTypes, firstPartyAccountType, firstPartyAccountId, secondPartyAccountType, secondPartyAccountId, contractId } = req.body;
   const session = await getSession({ req });
   
   let sdt = new Date(startDate);
@@ -32,6 +32,12 @@ export default async function handle(req, res) {
       interestRate: interestRate, 
       showInterestRate: showInterestRate, 
       allowCustomContract: allowCustomContract, 
+      showAccountTypes: showAccountTypes,  
+      firstPartyAccountType: firstPartyAccountType,   
+      firstPartyAccountId: firstPartyAccountId, 
+      secondPartyAccountType: secondPartyAccountType,  
+      secondPartyAccountId: secondPartyAccountId,  
+      contractId: contractId, 
     },
   });
 

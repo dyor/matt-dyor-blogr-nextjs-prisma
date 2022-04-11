@@ -22,8 +22,8 @@ import parseISO from 'date-fns/parseISO'
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
     const session = await getSession({ req });
     if (!session) {
-      res.statusCode = 403;
-      return { props: { contracts: [] } };
+        res.statusCode = 403;
+        return { props: { contracts: [] } };
     }
 }
 
@@ -72,7 +72,7 @@ const formats = [
 
 type Props = {
     contract: ContractProps;
-  };
+};
 
 const AddEdit: React.FC<Props> = (props) => {
     const { data: session } = useSession();
@@ -104,22 +104,28 @@ const AddEdit: React.FC<Props> = (props) => {
     const [secondPartyEmail, setSecondPartyEmail] = useState(contract.secondPartyEmail);
     const [content, setContent] = useState(contract.content);
     const [isTemplate, setIsTemplate] = useState(contract.isTemplate);
-    const [startDate, setStartDate] = useState(contract.startDate); 
-    const [endDate, setEndDate] = useState(contract.endDate); 
+    const [startDate, setStartDate] = useState(contract.startDate);
+    const [endDate, setEndDate] = useState(contract.endDate);
     const [amount, setAmount] = useState(contract.amount);
-    const [showAmount, setShowAmount] = useState(contract.showAmount); 
-    const [interestRate, setInterestRate] = useState(contract.interestRate); 
-    const [showInterestRate, setShowInterestRate] = useState(contract.showInterestRate); 
-    const [firstPartySignDate, setFirstPartySignDate] = useState(contract.firstPartySignDate); 
-    const [secondPartySignDate, setSecondPartySignDate] = useState(contract.secondPartySignDate); 
-    const [duration, setDuration] = useState(contract.duration); 
-    const [allowCustomContract, setAllowCustomContract] = useState(contract.allowCustomContract); 
-    
+    const [showAmount, setShowAmount] = useState(contract.showAmount);
+    const [interestRate, setInterestRate] = useState(contract.interestRate);
+    const [showInterestRate, setShowInterestRate] = useState(contract.showInterestRate);
+    const [firstPartySignDate, setFirstPartySignDate] = useState(contract.firstPartySignDate);
+    const [secondPartySignDate, setSecondPartySignDate] = useState(contract.secondPartySignDate);
+    const [duration, setDuration] = useState(contract.duration);
+    const [allowCustomContract, setAllowCustomContract] = useState(contract.allowCustomContract);
+    const [showAccountTypes, setShowAccountTypes] = useState(contract.showAccountTypes);
+    const [firstPartyAccountType, setFirstPartyAccountType] = useState(contract.firstPartyAccountType);
+    const [firstPartyAccountId, setFirstPartyAccountId] = useState(contract.firstPartyAccountId);
+    const [secondPartyAccountType, setSecondPartyAccountType] = useState(contract.secondPartyAccountType);
+    const [secondPartyAccountId, setSecondPartyAccountId] = useState(contract.secondPartyAccountId);
+    const [contractId, setContractId] = useState(contract.contractId);
 
-    let myDuration = 0; 
-    let myMonthlyPayment = ""; 
 
-    const [] = useState(); 
+    let myDuration = 0;
+    let myMonthlyPayment = "";
+
+    const [] = useState();
     let saveButtonLabel = "Save Contract";
 
     if (isTemplate) {
@@ -130,34 +136,33 @@ const AddEdit: React.FC<Props> = (props) => {
 
 
     const onSubmit = (data, e) => {
-        console.log("autthor", props.contract.author.email); 
         if (session && session.user.email == props.contract.author.email) {
-        try {
-            const renderedContent = content
-                .split("{Summary}").join(summary)
-                .split("{FirstPartyName}").join(firstPartyName)
-                .split("{FirstPartyEmail}").join(firstPartyEmail)
-                .split("{SecondPartyName}").join(secondPartyName)
-                .split("{SecondPartyEmail}").join(secondPartyEmail)
-                .split("{Amount}").join(amount.toString())
-                .split("{InterestRate}").join(interestRate.toString())
-                .split("{StartDate}").join(new Date(startDate).toLocaleDateString())
-                .split("{EndDate}").join(new Date(endDate).toLocaleDateString())
-                .split("{Title}").join(title).toString()
-                .split("{Duration}").join(monthDiff(startDate,endDate).toString())
-                .split("{MonthlyPayment}").join(monthlyPayment(amount, monthDiff(startDate,endDate), interestRate/100));
-                
-                
-               
-            const body = { title, content, summary, firstPartyName, firstPartyEmail, secondPartyName, secondPartyEmail, renderedContent, isTemplate, allowCustomContract, startDate, endDate, amount, showAmount, interestRate, showInterestRate, duration };
+            try {
+                const renderedContent = content
+                    .split("{Summary}").join(summary)
+                    .split("{FirstPartyName}").join(firstPartyName)
+                    .split("{FirstPartyEmail}").join(firstPartyEmail)
+                    .split("{SecondPartyName}").join(secondPartyName)
+                    .split("{SecondPartyEmail}").join(secondPartyEmail)
+                    .split("{Amount}").join(amount.toString())
+                    .split("{InterestRate}").join(interestRate.toString())
+                    .split("{StartDate}").join(new Date(startDate).toLocaleDateString())
+                    .split("{EndDate}").join(new Date(endDate).toLocaleDateString())
+                    .split("{Title}").join(title).toString()
+                    .split("{Duration}").join(monthDiff(startDate, endDate).toString())
+                    .split("{MonthlyPayment}").join(monthlyPayment(amount, monthDiff(startDate, endDate), interestRate / 100));
 
-            return isAddMode
-                ? createContract(body)
-                : updateContract(contract.id, body);
-        } catch (error) {
-            console.error(error);
+
+
+                const body = { title, content, summary, firstPartyName, firstPartyEmail, secondPartyName, secondPartyEmail, renderedContent, isTemplate, allowCustomContract, startDate, endDate, amount, showAmount, interestRate, showInterestRate, duration, showAccountTypes, firstPartyAccountType, firstPartyAccountId, secondPartyAccountType, secondPartyAccountId, contractId };
+
+                return isAddMode
+                    ? createContract(body)
+                    : updateContract(contract.id, body);
+            } catch (error) {
+                console.error(error);
+            }
         }
-    }
     }
 
 
@@ -171,7 +176,7 @@ const AddEdit: React.FC<Props> = (props) => {
 
             }).then(async (response) =>
                 associateParties(await response.json(), session.user.email)
-                ).then((response2) => Router.push(`/c/${response2}`));
+            ).then((response2) => Router.push(`/c/${response2}`));
         } catch (error) {
             console.error(error);
         }
@@ -223,18 +228,18 @@ const AddEdit: React.FC<Props> = (props) => {
 
     return (
         <div className="container">
-         <form onSubmit={handleSubmit(onSubmit, onError)}>
-            <div className="row">
-                <div className="col-sm">
-                    {
-                        isTemplate == true && (
-                            <h2>Default Template Values </h2>
-                        )}
-                    {
-                        isTemplate == false && (
-                            <h2>Key Contract Terms</h2>
-                        )}
-                    <label>&#123;Title&#125;</label>
+            <form onSubmit={handleSubmit(onSubmit, onError)}>
+                <div className="row">
+                    <div className="col-sm">
+                        {
+                            isTemplate == true && (
+                                <h2>Default Template Values </h2>
+                            )}
+                        {
+                            isTemplate == false && (
+                                <h2>Key Contract Terms</h2>
+                            )}
+                        <label>&#123;Title&#125;</label>
 
                         <input
                             autoFocus
@@ -280,155 +285,211 @@ const AddEdit: React.FC<Props> = (props) => {
                             value={secondPartyEmail}
                         />
                         {
-                                isTemplate == true && (
+                            isTemplate == true && (
                                 <div><i>Templates can use 1/1/2001 for &#123;StartDate&#125; and &#123;EndDate&#125; to make these dates dynamic based on contract creation date.</i></div>
-                                )}
-                            <label>&#123;StartDate&#125;</label>
-                                <DatePicker selected={new Date(startDate)} onChange={(date) => date.getDate() > 28 ? setStartDate(new Date(date.getFullYear(), date.getMonth() + 1, 1)) : setStartDate(date)  } />
-                            <label>&#123;EndDate&#125;</label>
-                                <DatePicker selected={new Date(endDate)} onChange={(date) => date.getDate() > 28 ? setEndDate(new Date(date.getFullYear(), date.getMonth() + 1, 1)) : setEndDate(date)  } />
-                                {/* <DatePicker selected={new Date(endDate)} onChange={(date) => setEndDate(date)} /> */}
-                                
-                                
-                             
-                        {
-                                isTemplate == true && (
-                                    <div>
-                                        Show Amount field? <input type="checkbox" checked={showAmount} onChange={() => setShowAmount(!showAmount)} />
-                                    </div>
-                                )
-                        }
-                        {
-                                showAmount == true && (
-                                    <div>
-                                
-                        <label>&#123;Amount&#125;</label>
-                        <input
-                            onChange={(e) => setAmount(parseFloat(e.target.value))}
-                            placeholder="Amount"
-                            type="number"
-                            value={amount}
-                        />
-                        </div>
-                        )}
-                        {
-                                isTemplate == true && (
-                                    <div>
-                                        Show Interest Rate field? <input type="checkbox" checked={showInterestRate} onChange={() => setShowInterestRate(!showInterestRate)} />
-                                    </div>
-                                )
-                        }
-                        {
-                                showInterestRate == true && (
-                                    <div>
-                                
-                        <label>&#123;InterestRate&#125; % (e.g., 8 for 8%)</label>
-                        <input
-                            onChange={(e) => setInterestRate(parseFloat(e.target.value))}
-                            placeholder="Interest Rate"
-                            type="number"
-                            value={interestRate}
-                        />
-                        </div>
-                        )}
-                                                {
-                                isTemplate == false && (
-                                    <div>
-                                        Convert this to a Template? <input type="checkbox" checked={isTemplate} onChange={() => setIsTemplate(!isTemplate)} />
-                                        </div>
-                                )
-                        }
-                                                {
-                                isTemplate == true && (
-                                    <div>
-                                        Allow Custom Contracts? <input type="checkbox" checked={allowCustomContract} onChange={() => setAllowCustomContract(!allowCustomContract)} />
-                                        </div>
-                                )
-                        }
+                            )}
+                        <label>&#123;StartDate&#125;</label>
+                        <DatePicker selected={new Date(startDate)} onChange={(date) => date.getDate() > 28 ? setStartDate(new Date(date.getFullYear(), date.getMonth() + 1, 1)) : setStartDate(date)} />
+                        <label>&#123;EndDate&#125;</label>
+                        <DatePicker selected={new Date(endDate)} onChange={(date) => date.getDate() > 28 ? setEndDate(new Date(date.getFullYear(), date.getMonth() + 1, 1)) : setEndDate(date)} />
+                        {/* <DatePicker selected={new Date(endDate)} onChange={(date) => setEndDate(date)} /> */}
 
+
+
+                        {
+                            isTemplate == true && (
+                                <div>
+                                    Show Amount field? <input type="checkbox" checked={showAmount} onChange={() => setShowAmount(!showAmount)} />
+                                </div>
+                            )
+                        }
+                        {
+                            showAmount == true && (
+                                <div>
+
+                                    <label>&#123;Amount&#125;</label>
+                                    <input
+                                        onChange={(e) => setAmount(parseFloat(e.target.value))}
+                                        placeholder="Amount"
+                                        type="number"
+                                        value={amount}
+                                    />
+                                </div>
+                            )}
+                        {
+                            isTemplate == true && (
+                                <div>
+                                    Show Interest Rate field? <input type="checkbox" checked={showInterestRate} onChange={() => setShowInterestRate(!showInterestRate)} />
+                                </div>
+                            )
+                        }
+                        {
+                            showInterestRate == true && (
+                                <div>
+
+                                    <label>&#123;InterestRate&#125; % (e.g., 8 for 8%)</label>
+                                    <input
+                                        onChange={(e) => setInterestRate(parseFloat(e.target.value))}
+                                        placeholder="Interest Rate"
+                                        type="number"
+                                        value={interestRate}
+                                    />
+                                </div>
+                            )}
+                        {
+                            isTemplate == true && (
+                                <div>
+                                    Show accounts? <input type="checkbox" checked={showAccountTypes} onChange={() => setShowAccountTypes(!showAccountTypes)} />
+                                </div>
+                            )
+                        }
+                        {
+                            showAccountTypes == true && (
+                                <>
+                                <div>
+                                    <label>&#123;firstPartyAccountType&#125; (e.g., Ethereum, Polygon)</label>
+                                    <input
+                                        onChange={(e) => setFirstPartyAccountType(e.target.value)}
+                                        placeholder="First Party Account Type"
+                                        type="text"
+                                        value={firstPartyAccountType}
+                                    />
+                                </div>
+                                <div>
+                                    <label>&#123;firstPartyAccountId&#125; (e.g., Wallet Address)</label>
+                                    <input
+                                        onChange={(e) => setFirstPartyAccountId(e.target.value)}
+                                        placeholder="First Party Account Id"
+                                        type="text"
+                                        value={firstPartyAccountId}
+                                    />
+                                </div>
+                                <div>
+                                    <label>&#123;secondPartyAccountType&#125; (e.g., Ethereum, Polygon)</label>
+                                     <input
+                                        onChange={(e) => setSecondPartyAccountType(e.target.value)}
+                                        placeholder="Second Party Account Type"
+                                        type="text"
+                                        value={secondPartyAccountType}
+                                    />
+                                </div>
+                                <div>
+                                    <label>&#123;secondPartyAccountId&#125; (e.g., Wallet Address)</label>
+                                    <input
+                                        onChange={(e) => setSecondPartyAccountId(e.target.value)}
+                                        placeholder="Second Party Account Id"
+                                        type="text"
+                                        value={secondPartyAccountId}
+                                    />
+                                </div>
+                                <div>
+                                    <label>&#123;contractId&#125; (e.g., Contract Address)</label>
+                                    <input
+                                        onChange={(e) => setContractId(e.target.value)}
+                                        placeholder="Contract Id"
+                                        type="text"
+                                        value={contractId}
+                                    />
+                                </div>
+                                </>
+                            )}
+
+                        {
+                            isTemplate == false && (
+                                <div>
+                                    Convert this to a Template? <input type="checkbox" checked={isTemplate} onChange={() => setIsTemplate(!isTemplate)} />
+                                </div>
+                            )
+                        }
+                        {
+                            isTemplate == true && (
+                                <div>
+                                    Allow Custom Contracts? <input type="checkbox" checked={allowCustomContract} onChange={() => setAllowCustomContract(!allowCustomContract)} />
+                                </div>
+                            )
+                        }
                         <h2>Calculated Fields</h2>
                         {
                             firstPartySignDate != null && (
                                 <><div>&#123;FirstPartySignDate&#125;</div>
-                        <div>{firstPartySignDate}</div>
-                        </>
+                                    <div>{firstPartySignDate}</div>
+                                </>
                             )}
-                        <div></div>
+                        <div>
+                        </div>
                         {
                             secondPartySignDate != null && (
                                 <><div>&#123;SecondPartySignDate&#125;</div>
-                        <div>{secondPartySignDate}</div>
-                        </>
+                                    <div>{secondPartySignDate}</div>
+                                </>
                             )}
                         <div>&#123;Duration&#125;</div>
                         <div>
-                        {
-                            myDuration = monthDiff(startDate,endDate)
-                        } Months
+                            {
+                                myDuration = monthDiff(startDate, endDate)
+                            } Months
                         </div>
                         {
                             amount > 0 && interestRate > 0 && startDate != null && endDate != null && (
                                 <><div>&#123;MonthlyPayment&#125;</div>
-                                <div>
-                        {
-                            myMonthlyPayment = monthlyPayment(amount, monthDiff(startDate,endDate), interestRate/100)
-                        }
-                        </div>
-                        <div>
-                            {
-                            parse(generatePaymentSchedule(startDate,endDate, myMonthlyPayment))
-                            }
-                            </div>
-                        </>
-                        )}
-                        <div>
-                            <br/>
-                            {session && (
-                            <button disabled={!content || !title} type="submit"  className="btn btn-primary btn-space" onSubmit={handleSubmit(onSubmit, onError)}>{saveButtonLabel}</button>
+                                    <div>
+                                        {
+                                            myMonthlyPayment = monthlyPayment(amount, monthDiff(startDate, endDate), interestRate / 100)
+                                        }
+                                    </div>
+                                    <div>
+                                        {
+                                            parse(generatePaymentSchedule(startDate, endDate, amount, myMonthlyPayment, firstPartyAccountType, firstPartyAccountId, secondPartyAccountType, secondPartyAccountId, contractId))
+                                        }
+                                    </div>
+                                </>
                             )}
-                            <button className="back btn-space btn btn-secondary" onClick={() => Router.push('/')}>Cancel</button>   
-                            <br/>
-                            <br/>
+                        <div>
+                            <br />
+                            {session && (
+                                <button disabled={!content || !title} type="submit" className="btn btn-primary btn-space" onSubmit={handleSubmit(onSubmit, onError)}>{saveButtonLabel}</button>
+                            )}
+                            <button className="back btn-space btn btn-secondary" onClick={() => Router.push('/')}>Cancel</button>
+                            <br />
+                            <br />
                         </div>
-                        
-                </div>
-                <div className="col-sm" >
-                    {
-                        (isTemplate == true || allowCustomContract == true ) && (
-                            <>
-                                <div>
-                                <h2>Template Body</h2>
-                                <br />
-                                <div className="white"> 
-                                    <QuillNoSSRWrapper modules={modules} placeholder='compose here' value={content} onChange={setContent} formats={formats} theme="snow" />
-                                </div>
-                                <br /><i>&#123;ContractTerms&#125; above will be replaced by entered values as shown below.</i><br /><hr />
-                                </div>
-                            </>
+
+                    </div>
+                    <div className="col-sm" >
+                        {
+                            (isTemplate == true || allowCustomContract == true) && (
+                                <>
+                                    <div>
+                                        <h2>Template Body</h2>
+                                        <br />
+                                        <div className="white">
+                                            <QuillNoSSRWrapper modules={modules} placeholder='compose here' value={content} onChange={setContent} formats={formats} theme="snow" />
+                                        </div>
+                                        <br /><i>&#123;ContractTerms&#125; above will be replaced by entered values as shown below.</i><br /><hr />
+                                    </div>
+                                </>
+                            )
+                        }
+                        {/* <h2>Contract Preview</h2> */}
+                        {parse(content
+                            .split("{Summary}").join(summary ? summary : "<strong>{Summary}</strong>")
+                            .split("{FirstPartyName}").join(firstPartyName ? firstPartyName : "<strong>{FirstPartyName}</strong>")
+                            .split("{FirstPartyEmail}").join(firstPartyEmail ? firstPartyEmail : "<strong>{FirstPartyEmail}</strong>")
+                            .split("{SecondPartyName}").join(secondPartyName ? secondPartyName : "<strong>{SecondPartyName}</strong>")
+                            .split("{SecondPartyEmail}").join(secondPartyEmail ? secondPartyEmail : "<strong>{SecondPartyEmail}</strong>")
+                            .split("{Title}").join(title ? title : "<strong>{Title}</strong>")
+                            .split("{Amount}").join(amount ? amount?.toString() : "<strong>{Amount}</strong>")
+                            .split("{InterestRate}").join(interestRate ? interestRate?.toString() : "<strong>{InterestRate}</strong>")
+                            .split("{StartDate}").join(startDate ? startDate.toLocaleDateString() : "<strong>{StartDate}</strong>")
+                            .split("{EndDate}").join(endDate ? endDate.toLocaleDateString() : "<strong>{EndDate}</strong>")
+                            .split("{Duration}").join(myDuration ? myDuration.toString() : "<strong>{Duration}</strong>")
+                            .split("{MonthlyPayment}").join(myMonthlyPayment ? myMonthlyPayment.toString() : "<strong>{MonthlyPayment}</strong>")
+
+                            // xxx need to add these terms to the above so that they are persisted. 
                         )
-                    }
-                    {/* <h2>Contract Preview</h2> */}
-                    {parse(content
-                        .split("{Summary}").join(summary ? summary : "<strong>{Summary}</strong>")
-                        .split("{FirstPartyName}").join(firstPartyName ? firstPartyName : "<strong>{FirstPartyName}</strong>")
-                        .split("{FirstPartyEmail}").join(firstPartyEmail ? firstPartyEmail : "<strong>{FirstPartyEmail}</strong>")
-                        .split("{SecondPartyName}").join(secondPartyName ? secondPartyName : "<strong>{SecondPartyName}</strong>")
-                        .split("{SecondPartyEmail}").join(secondPartyEmail ? secondPartyEmail : "<strong>{SecondPartyEmail}</strong>")
-                        .split("{Title}").join(title ? title : "<strong>{Title}</strong>")
-                        .split("{Amount}").join(amount ? amount?.toString() : "<strong>{Amount}</strong>")
-                        .split("{InterestRate}").join(interestRate ? interestRate?.toString() : "<strong>{InterestRate}</strong>")
-                        .split("{StartDate}").join(startDate ? startDate.toLocaleDateString() : "<strong>{StartDate}</strong>")
-                        .split("{EndDate}").join(endDate ? endDate.toLocaleDateString() : "<strong>{EndDate}</strong>")
-                        .split("{Duration}").join(myDuration ? myDuration.toString() : "<strong>{Duration}</strong>")
-                        .split("{MonthlyPayment}").join(myMonthlyPayment ? myMonthlyPayment.toString() : "<strong>{MonthlyPayment}</strong>")
-                        
-                        // xxx need to add these terms to the above so that they are persisted. 
-                        )
-                    }
-                    
-                    
+                        }
+                    </div>
                 </div>
-            </div>
             </form>
             <style jsx>{`
             .page {
@@ -489,24 +550,47 @@ function monthDiff(d1, d2) {
     return months <= 0 ? 0 : months;
 }
 
-function generatePaymentSchedule(d1, d2, myMonthlyPayment){
-    let myDuration = monthDiff(d1, d2); 
-    const d00 = new Date('1/1/1970'); 
-    let d0 = new Date(d1); 
+function generatePaymentSchedule(d1, d2, amount, myMonthlyPayment, firstPartyAccountType, firstPartyAccountId, secondPartyAccountType, secondPartyAccountId) {
+    let myDuration = monthDiff(d1, d2);
+    const d00 = new Date('1/1/1970');
+    let d0 = new Date(d1);
     // let myMonths = []; 
-    let myMonths ="<table border=1>"; 
-
-    for (let i = 0; i< myDuration; i++){
-        myMonths += "<tr><td>" + new Date(d0.setMonth(d0.getMonth()+1)).toLocaleDateString() + "</td><td>" + Math.round((d0.getTime() - d00.getTime())/1000) + "</td><td>$"+ myMonthlyPayment +"</td></tr>"; 
+    let myMonths = "<table class='table table-striped table-hover table-bordered'>";
+    if (firstPartyAccountType && secondPartyAccountType ){
+        myMonths = "{FirstPartyAccountId} Lender: <br/>"+firstPartyAccountId+"<br/>{SecondPartyAccountId} Borrower: <br/>"+secondPartyAccountId+"<br/><br/>" + myMonths;
+    }
+    let isEvm = false; 
+    if (firstPartyAccountType == secondPartyAccountType && (firstPartyAccountType== "Ethereum" || firstPartyAccountType== "Polygon")){
+        isEvm = true;
+    }
+    let accounts = ""; 
+    let unixdates = ""; 
+    let dateString = ""; 
+    for (let i = 0; i < myDuration; i++) {
+        if (i==0) {
+            accounts = "<td>lender -> borrower</td>";  
+            if (isEvm) {
+                myMonths += "<tr><th>Date</th><th>Unix Date</th><th>Amount</th><th>Operation</th></tr>"; 
+                unixdates = "<td>" + String(Math.round((d1.getTime() - d00.getTime()) / 1000)) + "</td>"; 
+            }
+            else {
+                myMonths += "<tr><th>Date</th><th>Amount</th><th>Operation</th></tr>"; 
+            }
+            myMonths += "<tr><td>" + d1.toLocaleDateString() + "</td>" + unixdates + "<td>$" + amount + "</td>"+accounts+"</tr>";
+            accounts = "<td>borrower -> lender</td>";   
+        }
+        dateString = new Date(d0.setMonth(d0.getMonth() + 1)).toLocaleDateString(); 
+        (isEvm) ? unixdates = "<td>" + String(Math.round((d0.getTime() - d00.getTime()) / 1000)) + "</td>": unixdates = ""; 
+        myMonths += "<tr><td>" + dateString + "</td>" + unixdates + "<td>$" + myMonthlyPayment + "</td>"+accounts+"</tr>";
     }
     myMonths += "</table>";
-    return myMonths; 
+    return myMonths;
 }
 
 
 //monthly mortgage payment
 
 
-function monthlyPayment(amount :number, duration :number, interestRate :number) {
-    return (amount * interestRate/12 * Math.pow(1+interestRate/12, duration )/(Math.pow(1+interestRate/12, duration ) - 1)).toFixed(2)
+function monthlyPayment(amount: number, duration: number, interestRate: number) {
+    return (amount * interestRate / 12 * Math.pow(1 + interestRate / 12, duration) / (Math.pow(1 + interestRate / 12, duration) - 1)).toFixed(2)
 }

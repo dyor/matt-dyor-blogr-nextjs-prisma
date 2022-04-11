@@ -47,8 +47,13 @@ export default async function handle(req, res) {
         interestRate: req.body.interestRate, 
         showInterestRate: Boolean(req.body.showInterestRate),
         allowCustomContract: Boolean(req.body.allowCustomContract), 
+        showAccountTypes: Boolean(req.body.allowCustomContract), 
+        firstPartyAccountType: req.body.firstPartyAccountType, 
+        firstPartyAccountId: req.body.firstPartyAccountId,
+        secondPartyAccountType: req.body.secondPartyAccountType, 
+        secondPartyAccountId: req.body.secondPartyAccountId, 
+        contractId: req.body.contractId, 
       }
-      
     }
     const contract = await prisma.contract.update({
       where: { id: Number(contractId) },

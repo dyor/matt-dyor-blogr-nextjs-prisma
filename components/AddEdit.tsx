@@ -550,7 +550,7 @@ function monthDiff(d1, d2) {
     return months <= 0 ? 0 : months;
 }
 
-function generatePaymentSchedule(d1, d2, amount, myMonthlyPayment, firstPartyAccountType, firstPartyAccountId, secondPartyAccountType, secondPartyAccountId) {
+function generatePaymentSchedule(d1, d2, amount, myMonthlyPayment, firstPartyAccountType, firstPartyAccountId, secondPartyAccountType, secondPartyAccountId, contractId) {
     let myDuration = monthDiff(d1, d2);
     const d00 = new Date('1/1/1970');
     let d0 = new Date(d1);

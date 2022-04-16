@@ -30,19 +30,23 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
 };
 
 const Sign: React.FC<ContractProps> = (props) => {
-  const { data: session } = useSession();
-  if (!session) {
-    return (
-      <Layout>
-        <div className="page jumbotron text-center">
-          <h1>You need to be authenticated to view this page</h1>
-          Sign up or sign in using the Log in button in the top right.</div>
-      </Layout>
-    );
-  }
+  const { data: session, status } = useSession();
   const [message, setMessage] = useState(''); // This will be used to show a message if the submission is successful
   const [submitted, setSubmitted] = useState(false);
-  const re = new RegExp(session.user.name);
+  let re = new RegExp('loading');
+  if (status === "authenticated") {
+    re = new RegExp(session.user.name);
+  }
+  // if (!session) {
+  //   return (
+  //     <Layout>
+  //       <div className="page jumbotron text-center">
+  //         <h1>You need to be authenticated to view this page</h1>
+  //         Sign up or sign in using the Log in button in the top right.</div>
+  //     </Layout>
+  //   );
+  // }
+
   let data = {};
 
   const formik = useFormik({
@@ -83,7 +87,7 @@ const Sign: React.FC<ContractProps> = (props) => {
       // message: yup.string().trim().required('Message is required'),
     }),
   });
-
+  if (status === "authenticated") {
   return (
     <>
     
@@ -287,6 +291,16 @@ const Sign: React.FC<ContractProps> = (props) => {
       </Head>
       </>
   );
+  }
+  else {
+    return (
+          <Layout>
+            <div className="page jumbotron text-center">
+              <h1>You need to be authenticated to view this page</h1>
+              Sign up or sign in using the Log in button in the top right.</div>
+          </Layout>
+        );
+  }
 };
 
 export default Sign;
